@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story - Cannolitaly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="header-left-cluster">
+                <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="header-actions">
+                <a href="account.html" aria-label="My Account">👤</a>
+                <div class="cart-container">
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        🛒<span class="cart-count">3</span>
+                    </a>
+                    
+                    <div class="cart-preview">
+                        <h4>Your Cart</h4>
+                        <div class="cart-preview-item">
+                            <img src="product1.jpg" alt="Classic Cannoli">
+                            <div class="cart-preview-item-info">
+                                <h5>Classic Cannoli</h5>
+                                <p>1 x $5.00</p>
+                            </div>
+                        </div>
+                        <div class="cart-preview-item">
+                            <img src="product3.jpg" alt="Chocolate Cannoli">
+                            <div class="cart-preview-item-info">
+                                <h5>Chocolate Cannoli</h5>
+                                <p>2 x $5.50</p>
+                            </div>
+                        </div>
+                        <a href="checkout.html" class="btn">Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Our Story</h1>
+        </section>
+
+        <section class="content-section">
+            <div class="container" style="max-width: 800px;">
+                <h2>From Messina to Los Angeles</h2>
+                <p>Our story begins in Messina (Taormina), where my family, who own a bar, perfected their own cannoli recipe over generations. It's a recipe built on love, patience, and the finest local ingredients.</p>
+                <p>Today, we bring that same tradition to your table in Los Angeles. Every cannoli is hand-filled just moments before it reaches you, ensuring a crispy shell and a rich, creamy filling.</p>
+                <p>This is not just a dessert. This is the real taste of Sicily.</p>
+                </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <h4>About Cannolitaly</h4>
+                <p>Bringing traditional Sicilian desserts to you with love and the finest ingredients.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Policies</h4>
+                <ul>
+                    <li><a href="policies/privacy.html">Privacy Policy</a></li>
+                    <li><a href="policies/refund.html">Refund Policy</a></li>
+                    <li><a href="policies/terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-subscribe">
+                <h4>Newsletter</h4>
+                <p>Get updates on new flavors and special offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- Sticky Header Logic ---
+        const header = document.querySelector('.main-header');
+        if (header) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+
+    });
+    </script>
+
+</body>
+</html>

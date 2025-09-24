@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannolitaly - UI Component Library</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                    🛒<span class="cart-count">3</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="padding-top: 40px; text-align: center;"><h1>UI Component Library</h1></div>
+
+    <section class="hero">
+        <h1>Holiday Pre-Orders Are Now Open</h1>
+        <p>Secure your handcrafted cannoli boxes for Thanksgiving and Christmas. Limited quantities available. Order by November 15th for guaranteed pickup.</p>
+        <a href="shop.html" class="btn">Pre-Order Now</a>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">Component: Product Card</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+                <a href="#" class="product-card">
+                    <div class="product-image"><img src="product1.jpg" alt="Classic Cannoli"></div>
+                    <div class="product-info">
+                        <h3>Classic Cannoli</h3>
+                        <p class="price">$5.00</p>
+                    </div>
+                </a>
+                <a href="#" class="product-card">
+                    <div class="product-image">
+                        <span class="product-status">Sold Out</span>
+                        <img src="product2.jpg" alt="Pistachio Cannoli">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pistachio Cannoli</h3>
+                        <p class="price">$6.50</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">Component: Product Gallery & Details</h2>
+            <div class="product-detail-layout">
+                <div class="product-gallery">
+                    <div class="main-image">
+                        <img src="product1.jpg" alt="Main product view" id="main-product-image" class="open-lightbox">
+                    </div>
+                    <div class="product-thumbnails">
+                        <img src="product1.jpg" alt="Thumbnail 1" class="thumbnail-image active">
+                        <img src="gallery2.jpg" alt="Thumbnail 2" class="thumbnail-image">
+                        <img src="gallery3.jpg" alt="Thumbnail 3" class="thumbnail-image">
+                    </div>
+                </div>
+                <div class="product-details">
+                    <h1>Classic Cannoli Box</h1>
+                    <p class="price">$28.00 (Box of 6)</p>
+                    <form>
+                        <div class="product-variants">
+                            <label>Choose Filling:</label>
+                            <div class="variant-options">
+                                <input type="radio" id="ricotta" name="filling" value="ricotta" checked>
+                                <label for="ricotta" class="variant-label">Classic Ricotta</label>
+                                <input type="radio" id="chocolate" name="filling" value="chocolate">
+                                <label for="chocolate" class="variant-label">Chocolate Cream</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Add to Cart</button>
+                    </form>
+                    <div class="product-accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">Allergens & Ingredients</div>
+                            <div class="accordion-content">
+                                <p>Contains: Wheat, Dairy, Soy. Our kitchen also processes nuts. Please contact us for specific allergen concerns.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">Pickup & Delivery</div>
+                            <div class="accordion-content">
+                                <p>Available for pickup at our Downtown location. Local delivery available within a 5-mile radius for orders over $50.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">Component: Testimonials</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="review-card">
+                    <p>"Absolutely the best cannoli I've had outside of Italy. The shell is perfectly crisp and the filling is divine."</p>
+                    <p class="reviewer">- Alex Johnson</p>
+                </div>
+                <div class="review-card">
+                    <p>"We ordered a variety box for a party and they were a huge hit. The pistachio is incredible. Will definitely be back."</p>
+                    <p class="reviewer">- Maria Garcia</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">Component: Checkout Form</h2>
+            <div class="checkout-layout">
+                <div>
+                    <h3>Delivery Method</h3>
+                    <div class="option-group selected" data-option="pickup">
+                        <input type="radio" name="delivery" checked> <strong>Local Pickup</strong>
+                        <p style="font-size: 14px; margin-top: 5px;">123 Pasta Lane - Ready in 24 hours</p>
+                    </div>
+                    <div class="option-group" data-option="shipping">
+                        <input type="radio" name="delivery"> <strong>Shipping</strong>
+                        <p style="font-size: 14px; margin-top: 5px;">Enter your address for shipping rates</p>
+                    </div>
+                    <h3 style="margin-top: 40px;">Contact Information</h3>
+                    <div class="form-group"><input type="email" placeholder="Email Address"></div>
+                </div>
+                <div class="cart-summary">
+                    <h4>Order Summary</h4>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="text-align: center;">
+        <div class="container">
+            <h2 style="margin-bottom: 40px;">Component: Newsletter Signup</h2>
+            <button class="btn open-newsletter-modal">Show Newsletter Pop-up</button>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-about"><h4>About Cannolitaly</h4><p>Bringing traditional Sicilian desserts to you with love.</p></div>
+            <div class="footer-links"><h4>Navigate</h4><ul><li><a href="shop.html">Shop</a></li><li><a href="events.html">Events</a></li></ul></div>
+            <div class="footer-links"><h4>Policies</h4><ul><li><a href="policies/privacy.html">Privacy</a></li><li><a href="policies/refund.html">Refunds</a></li></ul></div>
+            <div class="footer-subscribe"><h4>Newsletter</h4>
+                <form class="newsletter-form"><input type="email" placeholder="Your email" required><button type="submit">Sign Up</button></form>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <div class="modal-overlay" id="newsletter-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>Join Our Sweet List</h3>
+            <p>Be the first to know about new flavors, special events, and exclusive offers.</p>
+            <form class="newsletter-form" style="margin-top: 20px;">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="lightbox-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img src="product1.jpg" alt="Enlarged product view" id="lightbox-image">
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- Accordion Logic ---
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordionItem = header.parentElement;
+                accordionItem.classList.toggle('active');
+            });
+        });
+
+        // --- Generic Modal Logic ---
+        function setupModal(triggerSelector, modalSelector) {
+            const modal = document.querySelector(modalSelector);
+            if (!modal) return;
+            const openTriggers = document.querySelectorAll(triggerSelector);
+            const closeBtn = modal.querySelector('.modal-close');
+
+            openTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => modal.classList.add('active'));
+            });
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+            }
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        }
+        
+        // --- Setup Specific Modals ---
+        setupModal('.open-newsletter-modal', '#newsletter-modal');
+        setupModal('.open-lightbox', '#lightbox-modal');
+
+        // --- Product Gallery Logic ---
+        const mainImage = document.getElementById('main-product-image');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const thumbnails = document.querySelectorAll('.thumbnail-image');
+
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                // Update main image
+                mainImage.src = thumb.src;
+                // Update active state for thumbnails
+                thumbnails.forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+            });
+        });
+        
+        if (mainImage && lightboxImage) {
+            mainImage.addEventListener('click', () => {
+                lightboxImage.src = mainImage.src;
+            });
+        }
+        
+        // --- Checkout Delivery Options ---
+        document.querySelectorAll('.option-group').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.option-group').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                option.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+    });
+    </script>
+
+</body>
+</html>

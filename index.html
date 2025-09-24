@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannolitaly - Authentic Italian Cannolis</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="header-left-cluster">
+                <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
+                <nav class="main-nav"> <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="catering.html">Catering</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <a href="account.html" aria-label="My Account">👤</a>
+                <div class="cart-container">
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        🛒<span class="cart-count">3</span>
+                    </a>
+                    <div class="cart-preview">
+                        <h4>Your Cart</h4>
+                        <div class="cart-preview-item">
+                            <img src="product1.jpg" alt="Classic Cannoli">
+                            <div class="cart-preview-item-info">
+                                <h5>Classic Cannoli</h5>
+                                <p>1 x $5.00</p>
+                            </div>
+                        </div>
+                        <div class="cart-preview-item">
+                            <img src="product3.jpg" alt="Chocolate Cannoli">
+                            <div class="cart-preview-item-info">
+                                <h5>Chocolate Cannoli</h5>
+                                <p>2 x $5.50</p>
+                            </div>
+                        </div>
+                        <a href="checkout.html" class="btn">Checkout</a>
+                    </div>
+                </div>
+                <button class="mobile-nav-toggle" aria-label="Open navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="catering.html">Catering</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 data-aos="fade-up">Welcome to Cannolitaly</h1>
+                <p data-aos="fade-up" data-aos-delay="200">
+                    Where you will find handmade, traditional Sicilian cannoli made from a generations-old family recipe.
+                </p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+                    <a href="shop.html" class="btn">Order Now</a>
+                    <a href="about.html" class="btn btn-secondary">See Our Story</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="packaging-preview">
+            <div class="container text-center">
+                <h2 data-aos="fade-up">Our Signature Packaging</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <img src="bbe680c5-ecb6-4cbe-bbc6-b522c8056c73.jpeg" alt="Decorated Cannolitaly cannoli box" style="width: 100%; height: 75%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <img src="b6296bb5-cb6f-4881-90d8-ee554b66c108.jpeg" alt="White Cannolitaly cannoli box with logo" style="width: 100%; height: 75%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+            </div>
+        </section>
+        </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <h4>About Cannolitaly</h4>
+                <p>Bringing traditional Sicilian desserts to you with love.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Info</h4>
+                <p>
+                    <br>
+                    West Hollywood<br>
+                    <a href="tel:323-617-2445">(323) 617-2445</a>
+                </p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="shop.html"></a>cannolitali@gmail.com</li>
+                    <li><a href="contact.html"></a>323-617-2445</li>
+                </ul>
+            </div>
+            <div class="footer-subscribe">
+                <h4>Newsletter</h4>
+                <p>Get updates on new flavors and special offers.</p>
+                <form class="newsletter-form">
+                    <input type=" " placeholder=" " required>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <div class="modal-overlay" id="newsletter-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>Join Our Sweet List</h3>
+            <p>Be the first to know about new flavors, special events, and exclusive offers.</p>
+            <form class="newsletter-form" style="margin-top: 20px;">
+                <input type="email" placeholder="Enter your email address" required>
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="lightbox-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img src="product1.jpg" alt="Enlarged product view" id="lightbox-image">
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Initialize Animate on Scroll
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // --- Mobile Menu Logic ---
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+        const mobileNav = document.querySelector('.mobile-nav');
+        if (mobileNavToggle && mobileNav) {
+            mobileNavToggle.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+            });
+        }
+
+        // --- Sticky Header Logic ---
+        const header = document.querySelector('.main-header');
+        if (header) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // --- Accordion Logic ---
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.parentElement.classList.toggle('active');
+            });
+        });
+
+        // --- Generic Modal Logic ---
+        function setupModal(triggerSelector, modalSelector) {
+            const modal = document.querySelector(modalSelector);
+            if (!modal) return;
+            const openTriggers = document.querySelectorAll(triggerSelector);
+            const closeBtn = modal.querySelector('.modal-close');
+            openTriggers.forEach(trigger => trigger.addEventListener('click', () => modal.classList.add('active')));
+            if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+            modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
+        }
+        
+        setupModal('.open-newsletter-modal', '#newsletter-modal');
+        setupModal('.open-lightbox', '#lightbox-modal');
+
+        // --- Product Gallery Logic ---
+        const mainImage = document.getElementById('main-product-image');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const thumbnails = document.querySelectorAll('.thumbnail-image');
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const newSrc = thumb.src;
+                if (mainImage) mainImage.src = newSrc;
+                thumbnails.forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+            });
+        });
+        if (mainImage) mainImage.addEventListener('click', () => { if (lightboxImage) lightboxImage.src = mainImage.src; });
+        
+        // --- Checkout Delivery Options ---
+        document.querySelectorAll('.option-group').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.option-group').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                option.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+    });
+    </script>
+
+</body>
+</html>

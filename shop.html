@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Our Menu - Cannolitaly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="header-left-cluster">
+                <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
+                <nav class="main-nav"> <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html" class="active">Shop</a></li>
+                        <li><a href="catering.html">Catering</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <a href="account.html" aria-label="My Account">👤</a>
+                <div class="cart-container">
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        🛒<span class="cart-count">3</span>
+                    </a>
+                    <div class="cart-preview">
+                        <h4>Your Cart</h4>
+                        <div class="cart-preview-item">
+                            <img src="product1.jpg" alt="Classic Cannoli">
+                            <div class="cart-preview-item-info">
+                                <h5>Classic Cannoli</h5>
+                                <p>1 x $5.00</p>
+                            </div>
+                        </div>
+                        <div class="cart-preview-item">
+                            <img src="product3.jpg" alt="Chocolate Cannoli">
+                            <div class="cart-preview-item-info">
+                                <h5>Chocolate Cannoli</h5>
+                                <p>2 x $5.50</p>
+                            </div>
+                        </div>
+                        <a href="checkout.html" class="btn">Checkout</a>
+                    </div>
+                </div>
+                <button class="mobile-nav-toggle" aria-label="Open navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="catering.html">Catering</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1 data-aos="fade-up">Our Menu</h1>
+        </section>
+
+        <section id="shop-products">
+            <div class="container">
+                <div class="shop-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;" data-aos="fade-up">
+                    <p>Showing all products</p>
+                    <div class="shop-filters">
+                        <select name="collection" aria-label="Filter by collection">
+                            <option value="all">All Collections</option>
+                            <option value="classic">Classic Flavors</option>
+                            <option value="specialty">Specialty Boxes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="product-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <h4>About Cannolitaly</h4>
+                <p>Bringing traditional Sicilian desserts to you with love.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Info</h4>
+                <p>
+                    123 Pasta Lane<br>
+                    Los Angeles, CA 90210<br>
+                    <a href="tel:555-123-4567">(555) 123-4567</a>
+                </p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-subscribe">
+                <h4>Newsletter</h4>
+                <p>Get updates on new flavors and special offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email" required>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script src="firebase-init.js"></script>
+    
+    <script src="shop-loader.js"></script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Initialize Animate on Scroll
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // --- Mobile Menu Logic ---
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+        const mobileNav = document.querySelector('.mobile-nav');
+        if (mobileNavToggle && mobileNav) {
+            mobileNavToggle.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+            });
+        }
+
+        // --- Sticky Header Logic ---
+        const header = document.querySelector('.main-header');
+        if (header) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+    });
+    </script>
+
+</body>
+</html>
