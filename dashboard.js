@@ -1,75 +1,127 @@
-// dashboard.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Firebase services
+    const db = firebase.firestore();
+    const storage = firebase.storage();
 
-// 1. Proteger la página: si no hay un usuario logueado, redirige a admin.html
-auth.onAuthStateChanged(user => {
-    if (!user) {
-        window.location.href = 'admin.html';
-    }
-});
+    // Modal elements
+    const productModal = document.getElementById('product-modal');
+    const addProductBtn = document.getElementById('add-product-btn');
+    const closeModalBtn = document.querySelector('.modal-close');
+    
+    // Form elements
+    const productForm = document.getElementById('product-form');
+    const modalTitle = document.getElementById('modal-title');
+    const productIdField = document.getElementById('product-id');
+    const productNameField = document.getElementById('product-name');
+    const productDescriptionField = document.getElementById('product-description'); // Nuevo
+    const productPriceField = document.getElementById('product-price');
+    const productImageField = document.getElementById('product-image');
+    
+    const productList = document.getElementById('product-list');
 
-const addProductForm = document.getElementById('add-product-form');
-const productList = document.getElementById('product-list');
+    // --- Modal Logic ---
+    const openModal = () => productModal.classList.add('active');
+    const closeModal = () => {
+        productModal.classList.remove('active');
+        productForm.reset();
+        productIdField.value = '';
+    };
 
-// 2. Lógica para agregar un producto nuevo
-addProductForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name = addProductForm['product-name'].value;
-    const price = parseFloat(addProductForm['product-price'].value);
-    const imageFile = addProductForm['product-image'].files[0];
-
-    try {
-        // Subir la imagen a Firebase Storage
-        const storageRef = storage.ref(`product-images/${imageFile.name}`);
-        const uploadTask = await storageRef.put(imageFile);
-        const imageUrl = await uploadTask.ref.getDownloadURL();
-
-        // Guardar la información del producto en Firestore
-        await db.collection('products').add({
-            name: name,
-            price: price,
-            imageUrl: imageUrl,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        addProductForm.reset();
-        alert('Product added successfully!');
-
-    } catch (error) {
-        console.error("Error adding product: ", error);
-        alert('Error adding product.');
-    }
-});
-
-// 3. Mostrar los productos de Firestore en tiempo real
-db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-    let productsHtml = '';
-    snapshot.forEach(doc => {
-        const product = doc.data();
-        const productId = doc.id;
-        productsHtml += `
-            <div style="display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #eee; padding: 10px 0;">
-                <img src="${product.imageUrl}" alt="${product.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px;">
-                <div style="flex-grow: 1;">
-                    <strong>${product.name}</strong>
-                    <p>$${product.price.toFixed(2)}</p>
-                </div>
-                <button class="btn btn-secondary" onclick="deleteProduct('${productId}')">Delete</button>
-            </div>
-        `;
+    addProductBtn.addEventListener('click', () => {
+        modalTitle.textContent = 'Add New Product';
+        openModal();
     });
-    productList.innerHTML = productsHtml;
-});
+    closeModalBtn.addEventListener('click', closeModal);
+    productModal.addEventListener('click', (e) => {
+        if (e.target === productModal) closeModal();
+    });
 
-// 4. Función para eliminar un producto
-async function deleteProduct(productId) {
-    if (confirm('Are you sure you want to delete this product?')) {
-        try {
-            await db.collection('products').doc(productId).delete();
-            alert('Product deleted successfully.');
-        } catch (error) {
-            console.error("Error deleting product: ", error);
-            alert('Error deleting product.');
-        }
+    // --- Render Products ---
+    function renderProducts(products) {
+        productList.innerHTML = '';
+        products.forEach(product => {
+            const data = product.data();
+            const id = product.id;
+            
+            const card = document.createElement('div');
+            card.className = 'product-card-admin';
+            card.innerHTML = `
+                <img src="${data.imageUrl}" alt="${data.name}">
+                <div class="product-card-admin-info">
+                    <h4>${data.name}</h4>
+                    <p class="product-desc-admin">${data.description || ''}</p>
+                    <p class="product-price-admin">$${data.price.toFixed(2)}</p>
+                    <div class="product-card-admin-actions">
+                        <button class="btn btn-secondary edit-btn" data-id="${id}">Edit</button>
+                        <button class="btn btn-delete delete-btn" data-id="${id}">Delete</button>
+                    </div>
+                </div>
+            `;
+            productList.appendChild(card);
+        });
     }
-}
+    
+    db.collection('products').onSnapshot(snapshot => {
+        renderProducts(snapshot.docs);
+    });
+
+    // --- Handle Product Form Submission (Add & Edit) ---
+    productForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = productNameField.value;
+        const description = productDescriptionField.value; // Nuevo
+        const price = parseFloat(productPriceField.value);
+        const imageFile = productImageField.files[0];
+        const id = productIdField.value;
+
+        try {
+            if (id) {
+                const docRef = db.collection('products').doc(id);
+                await docRef.update({ name, description, price }); // Nuevo
+                
+                if (imageFile) {
+                    const storageRef = storage.ref(`products/${id}`);
+                    const snapshot = await storageRef.put(imageFile);
+                    const imageUrl = await snapshot.ref.getDownloadURL();
+                    await docRef.update({ imageUrl });
+                }
+            } else {
+                const imageRefName = `products/${Date.now()}-${imageFile.name}`;
+                const storageRef = storage.ref(imageRefName);
+                const snapshot = await storageRef.put(imageFile);
+                const imageUrl = await snapshot.ref.getDownloadURL();
+                
+                await db.collection('products').add({ name, description, price, imageUrl }); // Nuevo
+            }
+            closeModal();
+        } catch (error) {
+            console.error("Error saving product:", error);
+            alert("Could not save product. See console for details.");
+        }
+    });
+
+    // --- Handle Edit and Delete Buttons ---
+    productList.addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+
+        if (e.target.classList.contains('delete-btn')) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                await db.collection('products').doc(id).delete();
+            }
+        }
+
+        if (e.target.classList.contains('edit-btn')) {
+            const doc = await db.collection('products').doc(id).get();
+            const data = doc.data();
+            
+            modalTitle.textContent = 'Edit Product';
+            productIdField.value = id;
+            productNameField.value = data.name;
+            productDescriptionField.value = data.description; // Nuevo
+            productPriceField.value = data.price;
+            
+            openModal();
+        }
+    });
+});

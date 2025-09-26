@@ -1,32 +1,42 @@
-// shop-loader.js
-
+// Asegúrate de que tu firebase-init.js ya esté inicializando la app de Firebase.
+const db = firebase.firestore();
 const productGrid = document.getElementById('product-grid');
 
-db.collection('products').orderBy('createdAt', 'desc').get()
-    .then(snapshot => {
-        let productsHtml = '';
-        if (snapshot.empty) {
-            productGrid.innerHTML = '<p>No products available at the moment.</p>';
-            return;
-        }
+// Función para mostrar los productos en la página
+function renderProducts(products) {
+    productGrid.innerHTML = ''; // Limpia la lista actual
+    products.forEach(product => {
+        const productData = product.data();
+        const productId = product.id;
 
-        snapshot.forEach(doc => {
-            const product = doc.data();
-            productsHtml += `
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="${product.imageUrl}" alt="${product.name}">
-                    </div>
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <p class="price">$${product.price.toFixed(2)}</p>
-                    </div>
-                </a>
-            `;
-        });
-        productGrid.innerHTML = productsHtml;
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.innerHTML = `
+            <div class="product-image">
+                <img src="${productData.imageUrl}" alt="${productData.name}">
+            </div>
+            <div class="product-info">
+                <h3>${productData.name}</h3>
+                <p class="price">$${productData.price.toFixed(2)}</p>
+                <button 
+                    class="btn add-to-cart-btn" 
+                    data-product-id="${productId}" 
+                    data-name="${productData.name}" 
+                    data-price="${productData.price}">
+                    Add to Cart
+                </button>
+            </div>
+        `;
+        productGrid.appendChild(productCard);
+    });
+}
+
+// Obtener los productos de la colección 'products' en Firestore
+db.collection('products').get()
+    .then(querySnapshot => {
+        renderProducts(querySnapshot.docs);
     })
     .catch(error => {
-        console.error("Error fetching products: ", error);
-        productGrid.innerHTML = '<p>Error loading products. Please try again later.</p>';
+        console.error("Error getting products: ", error);
+        productGrid.innerHTML = "<p>Could not load products at this time.</p>";
     });

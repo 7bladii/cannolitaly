@@ -15,7 +15,7 @@
     <header class="main-header">
         <div class="container">
             <div class="header-left-cluster">
-                <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
+                <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
                 <nav class="main-nav">
                     <ul>
                         <li><a href="index.html" class="active">Home</a></li>
@@ -30,27 +30,9 @@
             <div class="header-actions">
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                        <span class="cart-count">3</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span class="cart-count">0</span>
                     </a>
-                    <div class="cart-preview">
-                        <h4>Your Cart</h4>
-                        <div class="cart-preview-item">
-                            <img src="product1.jpg" alt="Classic Cannoli">
-                            <div class="cart-preview-item-info">
-                                <h5>Classic Cannoli</h5>
-                                <p>1 x $5.00</p>
-                            </div>
-                        </div>
-                        <div class="cart-preview-item">
-                            <img src="product3.jpg" alt="Chocolate Cannoli">
-                            <div class="cart-preview-item-info">
-                                <h5>Chocolate Cannoli</h5>
-                                <p>2 x $5.50</p>
-                            </div>
-                        </div>
-                        <a href="checkout.html" class="btn">Checkout</a>
-                    </div>
                 </div>
                 <button class="mobile-nav-toggle" aria-label="Open navigation menu">
                     <span></span>
@@ -73,12 +55,10 @@
 
     <main>
         <section class="hero">
-            <div class="hero-content">
-                <h1 data-aos="fade-up">Welcome to Cannolitaly</h1>
-                <p data-aos="fade-up" data-aos-delay="200">
-                    Where you will find handmade, traditional Sicilian cannoli made from a generations-old family recipe.
-                </p>
-                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+            <div class="hero-content" data-aos="fade-up">
+                <h1>Welcome to Cannolitaly</h1>
+                <p>Where you will find handmade, traditional Sicilian cannoli made from a generations-old family recipe.</p>
+                <div class="hero-buttons">
                     <a href="shop.html" class="btn">Order Now</a>
                     <a href="about.html" class="btn btn-secondary">See Our Story</a>
                 </div>
@@ -90,10 +70,10 @@
                 <h2 data-aos="fade-up">Our Signature Packaging</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
                     <div data-aos="fade-up" data-aos-delay="100">
-                        <img src="bbe680c5-ecb6-4cbe-bbc6-b522c8056c73.jpeg" alt="Decorated Cannolitaly cannoli box" style="width: 100%; height: 75%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <img src="images/packaging1.jpeg" alt="Decorated Cannolitaly cannoli box">
                     </div>
                     <div data-aos="fade-up" data-aos-delay="200">
-                        <img src="b6296bb5-cb6f-4881-90d8-ee554b66c108.jpeg" alt="White Cannolitaly cannoli box with logo" style="width: 100%; height: 75%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <img src="images/packaging2.jpeg" alt="White Cannolitaly cannoli box with logo">
                     </div>
                 </div>
             </div>
@@ -126,7 +106,6 @@
             <div class="footer-contact">
                 <h4>Contact Info</h4>
                 <p>
-                    <br>
                     West Hollywood<br>
                     <a href="tel:323-617-2445">(323) 617-2445</a>
                 </p>
@@ -134,15 +113,15 @@
             <div class="footer-links">
                 <h4>Navigate</h4>
                 <ul>
-                    <li><a href="shop.html"></a>cannolitali@gmail.com</li>
-                    <li><a href="contact.html"></a>323-617-2445</li>
+                    <li><a href="mailto:cannolitali@gmail.com">cannolitali@gmail.com</a></li>
+                    <li><a href="tel:323-617-2445">(323) 617-2445</a></li>
                 </ul>
             </div>
             <div class="footer-subscribe">
                 <h4>Newsletter</h4>
                 <p>Get updates on new flavors and special offers.</p>
                 <form class="newsletter-form">
-                    <input type=" " placeholder=" " required>
+                    <input type="email" placeholder="Your email" required>
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -152,35 +131,15 @@
         </div>
     </footer>
 
-
-    <div class="modal-overlay" id="newsletter-modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h3>Join Our Sweet List</h3>
-            <p>Be the first to know about new flavors, special events, and exclusive offers.</p>
-            <form class="newsletter-form" style="margin-top: 20px;">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit" class="btn">Subscribe</button>
-            </form>
-        </div>
-    </div>
-    <div class="modal-overlay" id="lightbox-modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <img src="product1.jpg" alt="Enlarged product view" id="lightbox-image">
-        </div>
-    </div>
-
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="cart.js"></script> 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
         AOS.init({
             duration: 800,
             once: true
         });
 
-        // --- Mobile Menu Logic ---
         const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
         const mobileNav = document.querySelector('.mobile-nav');
         if (mobileNavToggle && mobileNav) {
@@ -189,7 +148,6 @@
             });
         }
 
-        // --- Auto-close mobile menu on link click ---
         const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -199,7 +157,6 @@
             });
         });
 
-        // --- Sticky Header Logic ---
         const header = document.querySelector('.main-header');
         if (header) {
             window.addEventListener('scroll', () => {

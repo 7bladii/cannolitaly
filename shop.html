@@ -16,7 +16,8 @@
         <div class="container">
             <div class="header-left-cluster">
                 <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
-                <nav class="main-nav"> <ul>
+                <nav class="main-nav">
+                    <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="shop.html" class="active">Shop</a></li>
                         <li><a href="catering.html">Catering</a></li>
@@ -26,29 +27,10 @@
                 </nav>
             </div>
             <div class="header-actions">
-                <a href="account.html" aria-label="My Account">👤</a>
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
-                        🛒<span class="cart-count">3</span>
+                        <span class="cart-count">0</span>
                     </a>
-                    <div class="cart-preview">
-                        <h4>Your Cart</h4>
-                        <div class="cart-preview-item">
-                            <img src="product1.jpg" alt="Classic Cannoli">
-                            <div class="cart-preview-item-info">
-                                <h5>Classic Cannoli</h5>
-                                <p>1 x $5.00</p>
-                            </div>
-                        </div>
-                        <div class="cart-preview-item">
-                            <img src="product3.jpg" alt="Chocolate Cannoli">
-                            <div class="cart-preview-item-info">
-                                <h5>Chocolate Cannoli</h5>
-                                <p>2 x $5.50</p>
-                            </div>
-                        </div>
-                        <a href="checkout.html" class="btn">Checkout</a>
-                    </div>
                 </div>
                 <button class="mobile-nav-toggle" aria-label="Open navigation menu">
                     <span></span>
@@ -127,26 +109,17 @@
         </div>
     </footer>
 
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <script src="firebase-init.js"></script>
-    
-    <script src="shop-loader.js"></script>
-
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="shop-loader.js"></script>
+    <script src="cart.js"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
-        // Initialize Animate on Scroll
         AOS.init({
             duration: 800,
             once: true
         });
 
-        // --- Mobile Menu Logic ---
         const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
         const mobileNav = document.querySelector('.mobile-nav');
         if (mobileNavToggle && mobileNav) {
@@ -155,7 +128,6 @@
             });
         }
 
-        // --- Sticky Header Logic ---
         const header = document.querySelector('.main-header');
         if (header) {
             window.addEventListener('scroll', () => {

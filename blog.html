@@ -3,28 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News - Cannolitaly</title>
+    <title>News & Updates - Cannolitaly</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header class="main-header">
         <div class="container">
-            <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="shop.html">Menu</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="locations.html">Locations</a></li>
-                    <li><a href="blog.html" class="active">News</a></li>
-                </ul>
-            </nav>
+            <div class="header-left-cluster">
+                <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="catering.html">Catering</a></li>
+                        <li><a href="blog.html" class="active">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="index.html#how-to-order">How to Order</a></li>
+                    </ul>
+                </nav>
+            </div>
             <div class="header-actions">
-                <a href="#" class="cart-icon" aria-label="Shopping Cart">🛒</a>
+                <div class="cart-container">
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+                <button class="mobile-nav-toggle" aria-label="Open navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="catering.html">Catering</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="index.html#how-to-order">How to Order</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main>
@@ -37,7 +62,7 @@
                 <div class="blog-grid">
 
                     <a href="#" class="blog-post-card">
-                        <img src="blog1.jpg" alt="New seasonal flavor">
+                        <img src="images/blog1.jpg" alt="New seasonal flavor">
                         <div class="blog-post-content">
                             <h3>Introducing Our New Pumpkin Spice Cannoli</h3>
                             <p>Just in time for fall, discover our limited-edition flavor that combines classic ricotta with warm autumn spices...</p>
@@ -46,7 +71,7 @@
                     </a>
 
                     <a href="#" class="blog-post-card">
-                        <img src="blog2.jpg" alt="Behind the scenes">
+                        <img src="images/blog2.jpg" alt="Behind the scenes">
                         <div class="blog-post-content">
                             <h3>Behind the Scenes: The Art of the Perfect Shell</h3>
                             <p>What makes our cannoli shells so crispy? We take you into our kitchen to show you the traditional process we use every day...</p>
@@ -55,7 +80,7 @@
                     </a>
                     
                     <a href="#" class="blog-post-card">
-                        <img src="blog3.jpg" alt="Community event">
+                        <img src="images/blog3.jpg" alt="Community event">
                         <div class="blog-post-content">
                             <h3>Cannolitaly at the Downtown Food Festival</h3>
                             <p>Thank you to everyone who came to see us last weekend! We had a wonderful time sharing our creations with the community...</p>
@@ -70,6 +95,20 @@
 
     <footer class="main-footer">
         </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        // Basic mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+            const mobileNav = document.querySelector('.mobile-nav');
+            if (mobileNavToggle) {
+                mobileNavToggle.addEventListener('click', () => {
+                    mobileNav.classList.toggle('active');
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders - Cannolitaly</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-init.js"></script>
+    <script>
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) window.location.href = 'login.html';
+        });
+    </script>
+
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="Cannolitaly Logo" class="sidebar-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">Products</a>
+                <a href="orders.html" class="active">Orders</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="firebase.auth().signOut().then(() => window.location.href = 'login.html')" class="btn btn-secondary">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header-bar">
+                <h1>Manage Orders</h1>
+            </header>
+            
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-list">
+                    </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="orders.js"></script>
+</body>
+</html>

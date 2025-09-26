@@ -1,33 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Cannolitaly</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="padding: 40px;">
-    <div class="container">
-        <h1>Product Dashboard</h1>
-        
-        <form id="add-product-form" style="margin-bottom: 40px; padding: 20px; background: var(--accent-color); border-radius: 8px;">
-            <h3>Add New Product</h3>
-            <div class="form-group"><label>Name</label><input type="text" id="product-name" required></div>
-            <div class="form-group"><label>Price ($)</label><input type="number" id="product-price" step="0.01" required></div>
-            <div class="form-group"><label>Image</label><input type="file" id="product-image" accept="image/*" required></div>
-            <button type="submit" class="btn">Add Product</button>
-        </form>
-
-        <hr>
-        <h3>Existing Products</h3>
-        <div id="product-list" style="margin-top: 20px;">
-            </div>
-    </div>
+<body>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="firebase-init.js"></script>
+    <script>
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
 
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        }
+    </script>
+
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="Cannolitaly Logo" class="sidebar-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="active">Products</a>
+                <a href="orders.html">Orders</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header-bar">
+                <h1>Products</h1>
+                <button id="add-product-btn" class="btn">+ Add New Product</button>
+            </header>
+            
+            <div id="product-list" class="product-grid-admin">
+                </div>
+        </main>
+    </div>
+
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3 id="modal-title">Add New Product</h3>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="product-name">Name</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Description</label>
+                    <textarea id="product-description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Price ($)</label>
+                    <input type="number" id="product-price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">Image</label>
+                    <input type="file" id="product-image" accept="image/*">
+                </div>
+                <button type="submit" class="btn">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="dashboard.js"></script>
 </body>
 </html>
