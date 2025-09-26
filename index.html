@@ -16,20 +16,22 @@
         <div class="container">
             <div class="header-left-cluster">
                 <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
-                <nav class="main-nav"> <ul>
+                <nav class="main-nav">
+                    <ul>
                         <li><a href="index.html" class="active">Home</a></li>
                         <li><a href="shop.html">Shop</a></li>
                         <li><a href="catering.html">Catering</a></li>
                         <li><a href="blog.html">Blog</a></li>
                         <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#how-to-order">How to Order</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="header-actions">
-                <a href="account.html" aria-label="My Account">👤</a>
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
-                        🛒<span class="cart-count">3</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span class="cart-count">3</span>
                     </a>
                     <div class="cart-preview">
                         <h4>Your Cart</h4>
@@ -64,6 +66,7 @@
                 <li><a href="catering.html">Catering</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="#how-to-order">How to Order</a></li>
             </ul>
         </nav>
     </header>
@@ -95,7 +98,24 @@
                 </div>
             </div>
         </section>
-        </main>
+    </main>
+
+    <section id="how-to-order" class="info-section">
+        <div class="container text-center">
+            <h2 data-aos="fade-up">How to Order</h2>
+            <div class="how-to-order-content" data-aos="fade-up" data-aos-delay="100">
+                <p>
+                    Ready for a taste of Sicily? You can build your own box of 6-12 or more cannolis directly from our "Order Now" section.
+                </p>
+                <p class="important-note">
+                    Please note: To ensure availability, all orders must be placed a minimum of 48 hours in advance.
+                </p>
+                <p>
+                    Delivery is available within a 10-mile radius of West Hollywood.
+                </p>
+            </div>
+        </div>
+    </section>
 
     <footer class="main-footer">
         <div class="container footer-grid">
@@ -155,7 +175,6 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         
-        // Initialize Animate on Scroll
         AOS.init({
             duration: 800,
             once: true
@@ -170,6 +189,16 @@
             });
         }
 
+        // --- Auto-close mobile menu on link click ---
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileNav.classList.contains('active')) {
+                    mobileNav.classList.remove('active');
+                }
+            });
+        });
+
         // --- Sticky Header Logic ---
         const header = document.querySelector('.main-header');
         if (header) {
@@ -181,51 +210,6 @@
                 }
             });
         }
-
-        // --- Accordion Logic ---
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                header.parentElement.classList.toggle('active');
-            });
-        });
-
-        // --- Generic Modal Logic ---
-        function setupModal(triggerSelector, modalSelector) {
-            const modal = document.querySelector(modalSelector);
-            if (!modal) return;
-            const openTriggers = document.querySelectorAll(triggerSelector);
-            const closeBtn = modal.querySelector('.modal-close');
-            openTriggers.forEach(trigger => trigger.addEventListener('click', () => modal.classList.add('active')));
-            if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-            modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
-        }
-        
-        setupModal('.open-newsletter-modal', '#newsletter-modal');
-        setupModal('.open-lightbox', '#lightbox-modal');
-
-        // --- Product Gallery Logic ---
-        const mainImage = document.getElementById('main-product-image');
-        const lightboxImage = document.getElementById('lightbox-image');
-        const thumbnails = document.querySelectorAll('.thumbnail-image');
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                const newSrc = thumb.src;
-                if (mainImage) mainImage.src = newSrc;
-                thumbnails.forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-            });
-        });
-        if (mainImage) mainImage.addEventListener('click', () => { if (lightboxImage) lightboxImage.src = mainImage.src; });
-        
-        // --- Checkout Delivery Options ---
-        document.querySelectorAll('.option-group').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.option-group').forEach(o => o.classList.remove('selected'));
-                option.classList.add('selected');
-                option.querySelector('input[type="radio"]').checked = true;
-            });
-        });
-
     });
     </script>
 

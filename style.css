@@ -22,6 +22,7 @@
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px; /* AÑADIDO: Evita que el header fijo cubra los títulos de las secciones. */
 }
 
 body {
@@ -78,6 +79,12 @@ section {
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
+.btn:active {
+    transform: translateY(0); /* AÑADIDO: Efecto al presionar el botón. */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+
 /* =================================================================== */
 /* HEADER V3: UPGRADED & RESPONSIVE STYLES */
 /* =================================================================== */
@@ -114,14 +121,13 @@ section {
     gap: 40px;
 }
 
-/* Logo con tu tamaño personalizado */
 .header-left-cluster .logo img {
     max-height: 105px;
     transition: max-height 0.3s ease;
 }
 
 .main-header.scrolled .logo img {
-    max-height: 85px; /* Tamaño ajustado para el scroll */
+    max-height: 85px;
 }
 
 .main-nav ul {
@@ -452,9 +458,18 @@ section {
     .hero-content h1 { font-size: 38px; }
     .hero-content p { font-size: 16px; }
     .hero-buttons { gap: 15px; }
-    .btn { padding: 10px 25px; }
     .grid-2-col, .product-grid, .product-detail-layout, .footer-grid, .blog-grid { grid-template-columns: 1fr; }
     .cart-preview { width: 90vw; right: 0; }
+
+    /* AÑADIDO: Mejoras de usabilidad para móviles */
+    .mobile-nav a {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    .btn {
+        padding: 14px 24px;
+        font-size: 1rem;
+    }
 }
 
 /* =================================================================== */
