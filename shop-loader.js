@@ -4,6 +4,10 @@ const productGrid = document.getElementById('product-grid');
 
 // Función para mostrar los productos en la página
 function renderProducts(products) {
+    if (!productGrid) {
+        console.error("Element with id 'product-grid' not found.");
+        return;
+    }
     productGrid.innerHTML = ''; // Limpia la lista actual
     products.forEach(product => {
         const productData = product.data();
@@ -22,7 +26,8 @@ function renderProducts(products) {
                     class="btn add-to-cart-btn" 
                     data-product-id="${productId}" 
                     data-name="${productData.name}" 
-                    data-price="${productData.price}">
+                    data-price="${productData.price}"
+                    data-image-url="${productData.imageUrl}">
                     Add to Cart
                 </button>
             </div>
@@ -38,5 +43,8 @@ db.collection('products').get()
     })
     .catch(error => {
         console.error("Error getting products: ", error);
-        productGrid.innerHTML = "<p>Could not load products at this time.</p>";
+        if (productGrid) {
+            productGrid.innerHTML = "<p>Could not load products at this time.</p>";
+        }
     });
+

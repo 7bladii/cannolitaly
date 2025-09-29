@@ -10,12 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
-<body>
+<!-- 1. CLASE AÑADIDA AQUÍ para identificar esta página -->
+<body class="catering-page">
 
     <header class="main-header">
         <div class="container">
             <div class="header-left-cluster">
-                <a href="index.html" class="logo"><img src="logo.png" alt="Cannolitaly Logo"></a>
+                <!-- 2. RUTA DEL LOGO CORREGIDA -->
+                <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
                 <nav class="main-nav">
                     <ul>
                         <li><a href="index.html">Home</a></li>
@@ -29,9 +31,11 @@
             <div class="header-actions">
                 <a href="account.html" aria-label="My Account">👤</a>
                 <div class="cart-container">
-                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">🛒<span class="cart-count">3</span></a>
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">🛒<span class="cart-count">0</span></a>
                     <div class="cart-preview">
-                        </div>
+                        <!-- 3. ID AÑADIDO para que el script del mini-carrito funcione -->
+                        <div id="mini-cart-items"></div>
+                    </div>
                 </div>
                 <button class="mobile-nav-toggle" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
             </div>
@@ -87,11 +91,18 @@
     </main>
 
     <footer class="main-footer">
-        </footer>
+    </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <!-- 4. SCRIPT DEL CARRITO AÑADIDO para que el contador funcione -->
+    <script src="cart.js"></script>
     <script>
-        // Pega aquí tu script completo
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true
+            });
+        });
     </script>
 </body>
 </html>

@@ -279,6 +279,82 @@ section {
 }
 
 /* =================================================================== */
+/* --- SHOP / PRODUCT GRID STYLES --- */
+/* =================================================================== */
+
+.page-header {
+    text-align: center;
+    background-color: var(--accent-color);
+    padding: 60px 0;
+}
+
+#product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+
+.product-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--white);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.product-card .product-image {
+    width: 100%;
+    height: 250px; /* Altura fija para la imagen */
+    overflow: hidden;
+}
+
+.product-card .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Clave para que la imagen cubra el espacio sin deformarse */
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05); /* Efecto de zoom sutil al pasar el ratón */
+}
+
+.product-card .product-info {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Permite que este contenedor crezca para llenar el espacio */
+}
+
+.product-card .product-info h3 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+.product-card .product-info .price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.product-card .add-to-cart-btn {
+    /* Este botón ya hereda los estilos de .btn, pero podemos ajustar si es necesario */
+    margin-top: auto; /* Empuja el botón al final de la tarjeta */
+    width: 100%;
+}
+
+
+/* =================================================================== */
 /* MODAL STYLES */
 /* =================================================================== */
 .modal-overlay {
@@ -521,4 +597,14 @@ section {
     .hero-content p {
         font-size: 18px;
     }
+}
+
+/* --- ESTILOS PARA LA PÁGINA DE CATERING --- */
+/*
+  Añade este código al final de tu archivo style.css
+  Ocultará los iconos de acciones (login y carrito) solo en la página
+  que tenga la clase .catering-page en la etiqueta <body>.
+*/
+.catering-page .header-actions {
+    display: none;
 }

@@ -13,12 +13,25 @@
 
     <header class="main-header">
         <div class="container">
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="shop.html">Shop</a></li>
-                </ul>
-            </nav>
+             <div class="header-left-cluster">
+                <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="catering.html">Catering</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <div class="cart-container">
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -39,6 +52,7 @@
                         </tr>
                     </thead>
                     <tbody id="cart-items">
+                        <!-- Los productos del carrito se cargarán aquí -->
                     </tbody>
                 </table>
                 <div class="cart-summary">
@@ -53,9 +67,15 @@
     </main>
 
     <footer class="main-footer">
+        <!-- Pega aquí tu footer -->
     </footer>
 
-    <script src="cart-page-loader.js"></script>
+    <!-- Scripts de Firebase (si son necesarios en esta página) -->
+    
+    <!-- Scripts del Carrito -->
+    <script src="cart.js"></script> <!-- Para actualizar el contador del header -->
+    <script src="cart-page-loader.js"></script> <!-- Para renderizar la tabla del carrito -->
 
 </body>
 </html>
+
