@@ -4,10 +4,7 @@ const productGrid = document.getElementById('product-grid');
 
 // Función para mostrar los productos en la página
 function renderProducts(products) {
-    if (!productGrid) {
-        console.error("Element with id 'product-grid' not found.");
-        return;
-    }
+    if (!productGrid) return; // Si no hay grid en la página, no hagas nada.
     productGrid.innerHTML = ''; // Limpia la lista actual
     products.forEach(product => {
         const productData = product.data();
@@ -16,9 +13,12 @@ function renderProducts(products) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         productCard.innerHTML = `
-            <div class="product-image">
-                <img src="${productData.imageUrl}" alt="${productData.name}">
-            </div>
+            <!-- ENLACE AÑADIDO ALREDEDOR DE LA IMAGEN -->
+            <a href="product-detail.html?id=${productId}" class="product-image-link">
+                <div class="product-image">
+                    <img src="${productData.imageUrl}" alt="${productData.name}">
+                </div>
+            </a>
             <div class="product-info">
                 <h3>${productData.name}</h3>
                 <p class="price">$${productData.price.toFixed(2)}</p>
