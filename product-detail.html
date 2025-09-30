@@ -1,32 +1,144 @@
-<main>
-    <section>
-        <div class="container">
-            <div class="product-detail-layout">
-                <div class="product-gallery">
-                    <img src="product1.jpg" alt="Classic Cannoli">
-                </div>
-                <div class="product-info">
-                    <h1>Classic Cannoli</h1>
-                    <p class="price">$5.00</p>
-                    <p class="availability in-stock">In Stock</p>
-                    <p>Our signature cannolo, featuring a crispy, golden-brown shell filled to order with our traditional sweet ricotta cream and dotted with miniature chocolate chips. A timeless classic.</p>
-                    
-                    <form class="product-form">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1">
-                        <button type="submit" class="btn">Add to Cart</button>
-                    </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Cannolitaly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
 
-                    <div class="product-accordion">
-                        <div class="accordion-item">
-                            <h4 class="accordion-header">Ingredients & Allergens</h4>
-                            <div class="accordion-content">
-                                <p>Contains: Wheat, Dairy, Soy. May contain traces of nuts.</p>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-left-cluster">
+                <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html" class="active">Shop</a></li>
+                        <li><a href="catering.html">Catering</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <div class="cart-container">
+                    <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+                <button class="mobile-nav-toggle" aria-label="Open navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <nav class="mobile-nav">
+             <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="catering.html">Catering</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section>
+            <div class="container">
+                <div class="product-detail-layout">
+                    <div class="product-gallery">
+                        <img src="" alt="Loading product...">
+                    </div>
+                    <div class="product-info">
+                        <h1>Loading...</h1>
+                        <p class="price">$0.00</p>
+                        <p class="availability in-stock">In Stock</p>
+                        <p class="description">Loading description...</p>
+                        
+                        <form class="product-form">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1">
+                            <button type="submit" class="btn">Add to Cart</button>
+                        </form>
+
+                        <div class="product-accordion">
+                            <div class="accordion-item">
+                                <h4 class="accordion-header">Ingredients & Allergens</h4>
+                                <div class="accordion-content">
+                                    <p>Contains: Wheat, Dairy, Soy. May contain traces of nuts.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+         <div class="container footer-grid">
+            <div class="footer-about">
+                <a href="login.html" style="text-decoration: none;">
+                    <h4>About Cannolitaly</h4>
+                </a>
+                <p>Bringing traditional Sicilian desserts to you with love.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Info</h4>
+                <p>
+                    West Hollywood<br>
+                    <a href="tel:323-617-2445">(323) 617-2445</a>
+                </p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="mailto:cannolitali@gmail.com">cannolitali@gmail.com</a></li>
+                    <li><a href="tel:323-617-2445">(323) 617-2445</a></li>
+                </ul>
+            </div>
         </div>
-    </section>
-</main>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+    <script src="firebase-init.js"></script>
+
+    <script src="cart.js"></script> 
+    <script src="product-detail.js"></script>
+    
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+        const mobileNav = document.querySelector('.mobile-nav');
+        if (mobileNavToggle && mobileNav) {
+            mobileNavToggle.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+            });
+        }
+    });
+    </script>
+
+</body>
+</html>
