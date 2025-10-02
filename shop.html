@@ -9,6 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <style>
+        /* Hides the account icon on this page only */
+        .header-actions a[href="account.html"] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -21,16 +28,23 @@
                         <li><a href="index.html">Home</a></li>
                         <li><a href="shop.html" class="active">Shop</a></li>
                         <li><a href="catering.html">Catering</a></li>
-                        <li><a href="blog.html">Blog</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="header-actions">
+                <a href="account.html" aria-label="My Account">👤</a>
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
-                        <span class="cart-count">0</span>
+                        🛒<span class="cart-count">0</span>
                     </a>
+                    <div class="cart-preview" id="cart-preview-container">
+                        <h4>Your Cart</h4>
+                        <div id="cart-preview-items">
+                           <p style="text-align:center; color:#777;">Your cart is empty.</p>
+                        </div>
+                        <a href="cart.html" class="btn">View Cart & Checkout</a>
+                    </div>
                 </div>
                 <button class="mobile-nav-toggle" aria-label="Open navigation menu">
                     <span></span>
@@ -44,7 +58,6 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shop.html">Shop</a></li>
                 <li><a href="catering.html">Catering</a></li>
-                <li><a href="blog.html">Blog</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
@@ -68,74 +81,51 @@
                     </div>
                 </div>
 
-                <div id="product-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+                <div id="product-grid">
                     </div>
             </div>
         </section>
     </main>
 
     <footer class="main-footer">
-        <div class="container footer-grid">
-            <div class="footer-about">
-                <h4>About Cannolitaly</h4>
-                <p>Bringing traditional Sicilian desserts to you with love.</p>
+        <div class="container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Cannolitaly Logo">
             </div>
-            <div class="footer-contact">
-                <h4>Contact Info</h4>
-                <p>
-                    West Hollywood<br>
-                    <br>
-                    <a href="tel:323 617-2445">(323) 617-2445</a>
-                </p>
+            <div class="social-icons">
+                <a href="https://instagram.com/your-username" target="_blank" class="social-icon" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                <a href="https://facebook.com/your-username" target="_blank" class="social-icon" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                <a href="https://tiktok.com/@your-username" target="_blank" class="social-icon" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path><path d="M12 12v9"></path><path d="M20 12h-4a8 8 0 0 0-8-8V4"></path></svg></a>
             </div>
-            <div class="footer-links">
-                <h4>Navigate</h4>
-                <ul>
-                    <li><a href="shop.html">Shop</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
+            <div class="footer-bottom">
+                <p>© 2025 Cannolitaly. All rights reserved.</p>
             </div>
-            <div class="footer-subscribe">
-                <h4>Newsletter</h4>
-                <p>Get updates on new flavors and special offers.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Your email" required>
-                    <button type="submit">Sign Up</button>
-                </form>
-            </div>
-        </div>
-        <div class="container footer-bottom">
-            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script> 
     
     <script src="firebase-init.js"></script>
     <script src="cart.js"></script>
     <script src="shop-loader.js"></script>
-
+    
     <script>
-    // This script for animations and mobile nav is fine
-    document.addEventListener('DOMContentLoaded', function() {
-        AOS.init({
-            duration: 800,
-            once: true
+        document.addEventListener('DOMContentLoaded', function() {
+            // Se inicializa AOS después de que su script ha sido cargado
+            AOS.init({ duration: 800, once: true });
+            
+            const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+            const mobileNav = document.querySelector('.mobile-nav');
+            if (mobileNavToggle && mobileNav) {
+                mobileNavToggle.addEventListener('click', () => {
+                    mobileNav.classList.toggle('active');
+                });
+            }
         });
-
-        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-        const mobileNav = document.querySelector('.mobile-nav');
-        if (mobileNavToggle && mobileNav) {
-            mobileNavToggle.addEventListener('click', () => {
-                mobileNav.classList.toggle('active');
-            });
-        }
-    });
     </script>
-
 </body>
 </html>
