@@ -11,6 +11,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- 👇 LÍNEA AÑADIDA PARA ARREGLAR EL ERROR 👇 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="firebase-init.js"></script>
     <script>
         firebase.auth().onAuthStateChanged(user => {
@@ -21,7 +23,8 @@
     <div class="admin-layout">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="logo.png" alt="Cannolitaly Logo" class="sidebar-logo">
+                <!-- 👇 RUTA DE LA IMAGEN CORREGIDA 👇 -->
+                <img src="images/logo.png" alt="Cannolitaly Logo" class="sidebar-logo">
             </div>
             <nav class="sidebar-nav">
                 <a href="dashboard.html">Products</a>
@@ -48,7 +51,8 @@
                     </tr>
                 </thead>
                 <tbody id="orders-list">
-                    </tbody>
+                    <!-- Las órdenes se cargarán aquí con JavaScript -->
+                </tbody>
             </table>
         </main>
     </div>

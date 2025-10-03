@@ -36,42 +36,55 @@
     </header>
 
     <main>
-        <section class="page-header">
+        <section class="cart-section container">
             <h1>Your Cart</h1>
-        </section>
-        <section>
-            <div class="container">
-                <table class="cart-table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="cart-items">
-                        </tbody>
-                </table>
-
-                <div class="payment-notice">
-                    <p><strong>Please Note:</strong> Payment will be collected in cash by the driver upon delivery to your home or chosen address.</p>
+    
+            <div class="cart-layout">
+    
+                <div class="cart-items-column">
+                    <div class="cart-header">
+                        <span>Product</span>
+                        <span class="text-right">Total</span>
+                    </div>
+                    <div id="cart-items-list">
+                        </div>
                 </div>
-
-                <div class="cart-summary">
-                    <h2>Cart Summary</h2>
-                    <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
-                    <div class="summary-row"><span>Taxes (estimated)</span><span id="taxes">$0.00</span></div>
-                    <div class="summary-row summary-total"><span>Total</span><span id="total">$0.00</span></div>
-                    <a href="checkout.html" class="btn" style="width: 100%; text-align: center; margin-top: 20px;">Proceed to Checkout</a>
-                </div>
+    
+                <aside class="cart-summary-column">
+                    <div class="cart-summary">
+                        <h2>Cart Summary</h2>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="summary-subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Taxes (estimated)</span>
+                            <span id="summary-taxes">$0.00</span>
+                        </div>
+                        <hr>
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span id="summary-total">$0.00</span>
+                        </div>
+                        <button id="checkout-btn" class="btn">Proceed to Checkout</button>
+                        <p class="payment-note">
+                            <strong>Please Note:</strong> Payment will be collected in cash by the driver upon delivery.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+    
+            <div id="empty-cart-message" class="empty-cart" style="display: none;">
+                <h2>Your cart is empty.</h2>
+                <a href="shop.html" class="btn">Continue Shopping</a>
             </div>
         </section>
     </main>
-
     <footer class="main-footer">
         </footer>
 
-    <script src="cart.js"></script> <script src="cart-page-loader.js"></script> </body>
+    <script src="cart.js"></script>
+    <script src="cart-page-loader.js"></script>
+
+</body>
 </html>

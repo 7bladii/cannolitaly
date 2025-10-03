@@ -2,22 +2,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const db = firebase.firestore();
     const productGrid = document.getElementById('product-grid');
 
-    if (!productGrid) return; // Exit if the product grid isn't on this page
+    // Exit if the product grid container isn't on this page
+    if (!productGrid) return;
 
     // Show a loading message while fetching data
-    productGrid.innerHTML = "<p>Loading products...</p>";
+    productGrid.innerHTML = "<p>Loading our delicious cannoli...</p>";
 
-    // Function to render products on the page
+    /**
+     * Renders a list of products into the product grid.
+     * @param {Array} products - An array of Firestore document snapshots.
+     */
     function renderProducts(products) {
         productGrid.innerHTML = ''; // Clear the loading message
-        products.forEach(product => {
-            const productData = product.data();
-            const productId = product.id;
+        products.forEach(productDoc => {
+            const productData = productDoc.data();
+            const productId = productDoc.id;
 
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
             
-            // The link now wraps both the image and the main info
+            // The HTML structure for each product card.
+            // The button includes all necessary data-* attributes for cart.js to use.
             productCard.innerHTML = `
                 <a href="product-detail.html?id=${productId}" class="product-link">
                     <div class="product-image">
@@ -49,28 +54,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderProducts(querySnapshot.docs);
     } catch (error) {
         console.error("Error getting products: ", error);
-        productGrid.innerHTML = "<p>Could not load products at this time.</p>";
+        productGrid.innerHTML = "<p>Could not load products at this time. Please try again later.</p>";
     }
 
-    // --- Event Listener for all "Add to Cart" Buttons ---
-    productGrid.addEventListener('click', (event) => {
-        // Check if the clicked element is a button with the correct class
-        if (event.target.classList.contains('add-to-cart-btn')) {
-            const button = event.target;
-            
-            const itemToAdd = {
-                id: button.dataset.productId,
-                name: button.dataset.name,
-                price: parseFloat(button.dataset.price),
-                imageUrl: button.dataset.imageUrl,
-                quantity: 1 // Add one item by default
-            };
-
-            // Call the function from cart.js to add the item
-            addToCart(itemToAdd);
-            
-            // Give user feedback
-            alert(`"${itemToAdd.name}" has been added to your cart!`);
-        }
-    });
+    // The event listener for the buttons has been removed from this file
+    // because the global listener in 'cart.js' already handles this functionality perfectly.
+    // This prevents code duplication and keeps our logic clean.
 });

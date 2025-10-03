@@ -1,0 +1,231 @@
+/* Estilo base para el overlay del modal (oculto por defecto) */
+.modal-overlay {
+    display: none; /* Muy importante: el modal empieza oculto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Cuando el modal tenga la clase .active, se mostrará */
+.modal-overlay.active {
+    display: flex; /* Se cambia a flex para mostrarlo y centrar el contenido */
+}
+
+/* Estilo del contenido del modal (la ventana blanca) */
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+/* Estilo para el botón de cerrar (la '×') */
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+/* =================================================================== */
+/* ESTILOS DEL MODAL Y FORMULARIO DE PRODUCTOS */
+/* =================================================================== */
+
+/* --- Estilo del Contenedor del Modal --- */
+.modal-content {
+    background-color: #fff;
+    padding: 2rem 2.5rem; /* Aumentamos el espaciado interno */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 550px; /* Un ancho máximo ideal para formularios */
+    position: relative;
+    /* Animación de entrada sutil */
+    transform: scale(0.95);
+    opacity: 0;
+    animation: fadeInModal 0.3s forwards ease-out;
+}
+
+/* Cuando el modal está activo, se aplica la animación */
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+@keyframes fadeInModal {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* --- Título del Modal --- */
+#modal-title {
+    font-family: 'Playfair Display', serif; /* Usamos la fuente de títulos */
+    color: #6b4f43; /* Usamos el color primario */
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.75rem;
+}
+
+/* --- Estilo General del Formulario --- */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-family: 'Roboto', sans-serif; /* Usamos la fuente de cuerpo */
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Efecto visual al seleccionar un campo del formulario */
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #6b4f43; /* Color primario en el borde */
+    box-shadow: 0 0 0 3px rgba(107, 79, 67, 0.15);
+}
+
+/* --- Estilo del Botón de Guardar --- */
+#product-form .btn {
+    display: block;
+    width: 100%;
+    background-color: #6b4f43; /* Color primario */
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 1.5rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#product-form .btn:hover {
+    background-color: #5a4238; /* Un tono más oscuro al pasar el ratón */
+    transform: translateY(-2px);
+}
+
+/* =================================================================== */
+/* ESTILOS DE LA LISTA DE PRODUCTOS DEL DASHBOARD */
+/* =================================================================== */
+
+/* --- 1. Contenedor de la Cuadrícula (Grid) --- */
+.product-grid-admin {
+    display: grid;
+    /* Crea columnas flexibles: intentarán medir 280px, 
+       pero se ajustarán para ocupar el espacio disponible */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem; /* Espacio entre las tarjetas */
+    padding-top: 1.5rem;
+}
+
+/* --- 2. Tarjeta Individual del Producto --- */
+.product-card-admin {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden; /* Oculta cualquier parte de la imagen que se salga */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card-admin:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* --- 3. La Imagen del Producto (La parte clave) --- */
+.product-card-admin img {
+    width: 100%; /* La imagen ocupa todo el ancho de la tarjeta */
+    height: 220px; /* Le damos una altura fija a todas las imágenes */
+    object-fit: cover; /* ¡Esta es la magia! */
+    /* 'cover' hace que la imagen llene el espacio sin deformarse,
+       recortando lo que sobre, como un fondo de pantalla. */
+    background-color: #f5f5f5; /* Un color de fondo mientras carga la imagen */
+}
+
+/* --- 4. Información y Botones (Estilos adicionales) --- */
+.product-card-admin-info {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Hace que esta sección ocupe el espacio sobrante */
+}
+
+.product-card-admin-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.product-card-admin-info p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #6b4f43;
+    margin-bottom: 1rem;
+}
+
+.product-card-admin-actions {
+    margin-top: auto; /* Empuja los botones hacia abajo */
+    display: flex;
+    gap: 0.75rem; /* Espacio entre botones */
+}
+
+.product-card-admin-actions .btn {
+    flex-grow: 1; /* Hace que ambos botones ocupen el mismo espacio */
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: #555;
+    border-radius: 8px;
+}
+
+.product-card-admin-actions .btn:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}
+
+.product-card-admin-actions .btn-delete:hover {
+    background-color: #dc3545; /* Rojo de peligro */
+    color: #fff;
+    border-color: #dc3545;
+}

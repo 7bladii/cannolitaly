@@ -1,102 +1,90 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Select UI elements
-    const cartCountElement = document.querySelector('.cart-count');
-    const cartPreviewContainer = document.getElementById('cart-preview-items');
-    
-    // Load cart from localStorage or start with an empty array
-    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+// This script should be loaded on ALL pages to manage the cart state globally.
 
-    /**
-     * Updates the HTML for the cart preview dropdown.
-     */
-    function updateCartPreview() {
-        if (!cartPreviewContainer) return;
+// --- 1. GLOBAL CART STATE AND FUNCTIONS ---
 
-        if (cart.length === 0) {
-            cartPreviewContainer.innerHTML = '<p style="text-align:center; color:#777;">Your cart is empty.</p>';
-        } else {
-            cartPreviewContainer.innerHTML = ''; // Clear old items
-            cart.forEach(item => {
-                const itemHTML = `
-                    <div class="cart-preview-item">
-                        <img src="${item.imageUrl}" alt="${item.name}">
-                        <div class="cart-preview-item-info">
-                            <h5>${item.name} (x${item.quantity})</h5>
-                            <p>$${(item.price * item.quantity).toFixed(2)}</p>
-                        </div>
-                    </div>
-                `;
-                cartPreviewContainer.innerHTML += itemHTML;
-            });
-        }
+// Load cart from localStorage or initialize an empty array.
+// This `cart` variable is now globally accessible.
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+/**
+ * Saves the current cart state to localStorage.
+ */
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    // Dispatch a custom event to notify the UI (like the cart icon) that the cart has changed.
+    document.dispatchEvent(new CustomEvent('cartUpdated'));
+}
+
+/**
+ * Adds a new product to the cart or updates its quantity if it already exists.
+ * This function is now global and can be called from any other script.
+ * @param {object} newItem - The product object to add.
+ */
+function addToCart(newItem) {
+    const existingItem = cart.find(item => item.id === newItem.id);
+
+    if (existingItem) {
+        existingItem.quantity += newItem.quantity;
+    } else {
+        cart.push(newItem);
     }
+    
+    saveCart(); // Save the updated cart and notify the UI.
+    console.log('Cart updated:', cart);
+}
+
+// --- 2. UI MANAGEMENT (runs after the DOM is ready) ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cartCountElement = document.querySelector('.cart-count');
 
     /**
-     * Updates the cart icon's counter bubble.
+     * Updates the number displayed on the cart icon.
      */
     function updateCartCount() {
         if (!cartCountElement) return;
+
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        
         cartCountElement.textContent = totalItems;
         cartCountElement.style.display = totalItems > 0 ? 'flex' : 'none';
     }
 
-    /**
-     * Saves the cart and updates all UI components.
-     */
-    function saveCartAndupdateUI() {
-        localStorage.setItem('shoppingCart', JSON.stringify(cart));
-        updateCartCount();
-        updateCartPreview();
-    }
+    // Listen for the custom 'cartUpdated' event to refresh the cart count.
+    document.addEventListener('cartUpdated', updateCartCount);
 
-    /**
-     * Adds an item to the cart or updates its quantity.
-     * @param {object} newItem - The product to add.
-     */
-    function addToCart(newItem) {
-        const existingItem = cart.find(item => item.id === newItem.id);
+    // Initial update when the page loads.
+    updateCartCount();
 
-        if (existingItem) {
-            existingItem.quantity += newItem.quantity;
-        } else {
-            cart.push(newItem);
-        }
-        
-        saveCartAndupdateUI();
-    }
-
-    // --- GLOBAL EVENT LISTENER for "Add to Cart" buttons ---
+    // --- 3. GLOBAL CLICK HANDLER FOR "ADD TO CART" BUTTONS ---
+    // Using "event delegation" on `document` ensures this works even for buttons
+    // that are added to the page dynamically (like from shop-loader.js).
     document.addEventListener('click', (event) => {
         const addButton = event.target.closest('.add-to-cart-btn');
         
         if (addButton) {
             const { productId, name, price, imageUrl } = addButton.dataset;
+            const quantityInput = document.getElementById('quantity');
+            const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
 
             if (productId && name && price && imageUrl) {
-                const itemToAdd = {
+                addToCart({
                     id: productId,
                     name: name,
                     price: parseFloat(price),
                     imageUrl: imageUrl,
-                    quantity: 1
-                };
-                
-                addToCart(itemToAdd);
+                    quantity: quantity
+                });
 
-                // Better User Feedback: Briefly change button text
+                // Provide visual feedback to the user
                 const originalText = addButton.textContent;
                 addButton.textContent = 'Added!';
+                addButton.disabled = true;
                 setTimeout(() => {
                     addButton.textContent = originalText;
-                }, 1500); // Revert after 1.5 seconds
-
-            } else {
-                console.error('Product data attributes are missing from the button.');
+                    addButton.disabled = false;
+                }, 1500);
             }
         }
     });
-
-    // --- Initialize the UI when the page first loads ---
-    saveCartAndupdateUI();
 });

@@ -54,34 +54,38 @@
     <main class="main-content">
         <section>
             <div class="container">
-                <div class="product-detail-layout">
-                    <div class="product-gallery">
-                        <img src="" alt="Loading product...">
-                    </div>
-                    <div class="product-info">
-                        <h1>Loading...</h1>
-                        <p class="price">$0.00</p>
-                        <p class="availability in-stock">In Stock</p>
-                        <p class="description">Loading description...</p>
-                        
-                        <form class="product-form">
-                            <label for="quantity">Quantity</label>
-                            <input type="number" id="quantity" name="quantity" value="1" min="1">
-                            <button type="submit" class="btn">Add to Cart</button>
-                        </form>
-
-                        <div class="product-accordion">
-                            <div class="accordion-item">
-                                <h4 class="accordion-header">Ingredients & Allergens</h4>
-                                <div class="accordion-content">
-                                    <p>Contains: Wheat, Dairy, Soy. May contain traces of nuts.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <a href="#" id="back-link" class="back-link">&larr; Back to Shop</a>
             </div>
-        </section>
+
+            <div class="product-detail-container container">
+
+                <div class="product-image-column">
+                    <img src="" alt="Loading product..." id="product-image">
+                </div>
+        
+                <div class="product-details-column">
+                    <h1 id="product-name">Loading...</h1>
+                    
+                    <p class="price" id="product-price">$0.00</p>
+                    
+                    <p class="stock-status">In Stock</p>
+                    
+                    <p class="description" id="product-description">
+                        Loading description...
+                    </p>
+        
+                    <div class="add-to-cart-section">
+                        <div class="quantity-selector">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" value="1" min="1">
+                        </div>
+                        <button class="btn add-to-cart-btn">Add to Cart</button>
+                    </div>
+        
+                </div>
+        
+            </div>
+            </section>
     </main>
 
     <footer class="main-footer">
@@ -135,6 +139,15 @@
         if (mobileNavToggle && mobileNav) {
             mobileNavToggle.addEventListener('click', () => {
                 mobileNav.classList.toggle('active');
+            });
+        }
+        
+        // 👇 LÓGICA PARA EL BOTÓN DE VOLVER AÑADIDA AQUÍ 👇
+        const backButton = document.getElementById('back-link');
+        if (backButton) {
+            backButton.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevents the link from navigating to "#"
+                history.back();         // This function navigates to the previous page
             });
         }
     });

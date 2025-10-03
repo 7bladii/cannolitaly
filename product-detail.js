@@ -1,52 +1,75 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // Inicializa la conexión con la base de datos de Firestore
+    // --- Lógica para el botón de volver ---
+    const backButton = document.getElementById('back-link');
+    if (backButton) {
+        backButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevents the link from navigating to "#"
+            history.back();         // This function navigates to the previous page
+        });
+    }
+
+    // --- Lógica para cargar los detalles del producto ---
     const db = firebase.firestore();
-    const mainContent = document.querySelector('.main-content');
+
+    const productImage = document.getElementById('product-image');
+    const productName = document.getElementById('product-name');
+    const productPrice = document.getElementById('product-price');
+    const productDescription = document.getElementById('product-description');
+    const productDetailContainer = document.querySelector('.product-detail-container');
+
+    const showError = (message) => {
+        if (productDetailContainer) {
+            productDetailContainer.innerHTML = `<h2 style="text-align: center; width: 100%;">${message}</h2>`;
+        }
+    };
 
     try {
-        // --- OBTENER EL ID DEL PRODUCTO DESDE LA URL ---
-        const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id');
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
 
         if (!productId) {
-            // Lanza un error si no hay ID para ser capturado por el bloque catch
-            throw new Error('No product ID found in URL.');
+            showError('Product not specified.');
+            return;
         }
 
-        // --- BUSCAR EL PRODUCTO EN FIRESTORE ---
-        const productRef = db.collection('products').doc(productId);
-        const doc = await productRef.get(); // 'await' pausa la ejecución hasta que la promesa se resuelva
+        const docRef = db.collection('products').doc(productId);
+        const doc = await docRef.get();
 
-        if (doc.exists) {
-            // Si el producto existe, obtenemos sus datos
-            const productData = doc.data();
-            
-            // --- ACTUALIZAR EL HTML CON LOS DATOS DEL PRODUCTO ---
-            document.title = `${productData.name} - Cannolitaly`;
-            
-            // Usar selectores más específicos es una buena práctica
-            document.querySelector('.product-info h1').textContent = productData.name;
-            document.querySelector('.product-info .price').textContent = `$${productData.price.toFixed(2)}`;
-            // **Recomendación:** Asegúrate de que tu párrafo de descripción en HTML tenga la clase "description"
-            // Ejemplo: <p class="description">Loading description...</p>
-            document.querySelector('.product-info .description').textContent = productData.description;
-            
-            const productImageEl = document.querySelector('.product-gallery img');
-            productImageEl.src = productData.imageUrl;
-            productImageEl.alt = productData.name;
+        if (!doc.exists) {
+            showError('An error occurred while loading the product.');
+            console.error('No such document!');
+            return;
+        }
 
-        } else {
-            // Lanza un error si el producto no se encuentra
-            throw new Error('No such product in Firestore!');
+        const product = doc.data();
+        
+        document.title = `${product.name} - Cannolitaly`;
+
+        if (productImage) {
+            productImage.src = product.imageUrl;
+            productImage.alt = product.name;
+        }
+        if (productName) {
+            productName.textContent = product.name;
+        }
+        if (productPrice) {
+            productPrice.textContent = `$${product.price.toFixed(2)}`;
+        }
+        if (productDescription) {
+            productDescription.textContent = product.description;
+        }
+        
+        // Asignar los datos del producto al botón "Add to Cart"
+        const addToCartButton = document.querySelector('.add-to-cart-btn');
+        if (addToCartButton) {
+            addToCartButton.dataset.productId = productId;
+            addToCartButton.dataset.name = product.name;
+            addToCartButton.dataset.price = product.price;
+            addToCartButton.dataset.imageUrl = product.imageUrl;
         }
 
     } catch (error) {
-        // El bloque 'catch' maneja cualquier error que ocurra en el bloque 'try'
-        console.error("Error getting product:", error.message);
-        if (error.message.includes('No product ID') || error.message.includes('No such product')) {
-            mainContent.innerHTML = '<h1>Producto no encontrado.</h1>';
-        } else {
-            mainContent.innerHTML = '<h1>Ocurrió un error al cargar el producto.</h1>';
-        }
+        console.error("Error getting product:", error);
+        showError('An error occurred while loading the product.');
     }
 });

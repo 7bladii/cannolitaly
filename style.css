@@ -543,3 +543,279 @@ section {
         /* background-image: url('images/hero-background-mobile.jpg'); */
     }
 }
+
+/* =================================================================== */
+/* PRODUCT DETAIL PAGE STYLES */
+/* =================================================================== */
+
+/* --- 1. Layout Principal (2 columnas) --- */
+.product-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+    gap: 3rem; /* Espacio entre las columnas */
+    padding: 4rem 0;
+}
+
+/* --- 2. Columna de la Imagen --- */
+.product-image-column img {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* --- 3. Columna de Detalles --- */
+.product-details-column h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.product-details-column .price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.product-details-column .stock-status {
+    font-weight: 500;
+    color: var(--success-color); /* Color verde para "In Stock" */
+    margin-bottom: 1.5rem;
+}
+
+.product-details-column .description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+/* --- 4. Sección "Añadir al Carrito" --- */
+.add-to-cart-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* Espacio entre cantidad y botón */
+    margin-bottom: 2rem;
+    flex-wrap: wrap; /* Permite que se apile en pantallas pequeñas */
+}
+
+.quantity-selector label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.quantity-selector input {
+    width: 70px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1.1rem;
+}
+
+.add-to-cart-btn {
+    flex-grow: 1; /* El botón crece para ocupar el espacio disponible */
+    padding: 15px 20px !important;
+    font-size: 1.1rem;
+}
+
+/* --- 5. Información Extra --- */
+.product-extra-info {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.product-extra-info h3 {
+    margin-bottom: 0.5rem;
+}
+
+/* --- 6. Estilos para Móviles (Responsive) --- */
+@media (max-width: 768px) {
+    .product-detail-container {
+        grid-template-columns: 1fr; /* Una sola columna en móviles */
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .product-details-column h1 {
+        font-size: 2rem;
+    }
+}
+
+/* =================================================================== */
+/* CART PAGE STYLES */
+/* =================================================================== */
+
+.cart-section {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.cart-section h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+/* --- Layout Principal --- */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 para items, 1/3 para resumen */
+    gap: 2rem;
+}
+
+/* --- Columna de Items --- */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.cart-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cart-item-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.cart-item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-item-details h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.cart-item-details .item-price {
+    color: #666;
+    margin-bottom: auto;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cart-item-actions .quantity-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.cart-item-actions .remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+}
+
+.cart-item-total {
+    font-size: 1.1rem;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: right;
+}
+
+/* --- Columna del Resumen --- */
+.cart-summary {
+    background-color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: sticky; /* Se queda fijo al hacer scroll */
+    top: 120px; /* Espacio desde el header */
+}
+
+.cart-summary h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.summary-row, .summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.cart-summary hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 1rem 0;
+}
+
+.summary-total {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.summary-total span:last-child {
+    color: var(--primary-color);
+}
+
+.cart-summary .btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 15px;
+}
+
+.payment-note {
+    font-size: 0.85rem;
+    color: #777;
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+/* --- Carrito Vacío y Responsividad --- */
+.empty-cart {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+@media (max-width: 768px) {
+    .cart-layout {
+        grid-template-columns: 1fr; /* Apila las columnas en móvil */
+    }
+    .cart-summary {
+        position: static; /* Desactiva el sticky en móvil */
+    }
+}
+
+/* =================================================================== */
+/* BACK LINK STYLES */
+/* =================================================================== */
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 2rem; /* Espacio debajo del link */
+    font-weight: 500;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}

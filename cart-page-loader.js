@@ -1,68 +1,109 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const cartItemsContainer = document.getElementById('cart-items');
-    const subtotalElement = document.getElementById('subtotal');
-    const taxesElement = document.getElementById('taxes');
-    const totalElement = document.getElementById('total');
+    // --- Select UI elements using the correct IDs from the new HTML structure ---
+    const cartItemsList = document.getElementById('cart-items-list');
+    const summarySubtotal = document.getElementById('summary-subtotal');
+    const summaryTaxes = document.getElementById('summary-taxes');
+    const summaryTotal = document.getElementById('summary-total');
+    const emptyCartMessage = document.getElementById('empty-cart-message');
+    const cartLayout = document.querySelector('.cart-layout');
+    const checkoutBtn = document.getElementById('checkout-btn');
 
-    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const TAX_RATE = 0.095; // Example tax rate (9.5% for Los Angeles)
 
-    const TAX_RATE = 0.095; // 9.5% tax rate
+    /**
+     * Renders all items from localStorage into the cart page.
+     */
+    function renderCart() {
+        // Use the consistent 'cart' key for localStorage
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    const updateCart = () => {
-        if (!cartItemsContainer) return; // Safety check
+        // Safety check if elements don't exist
+        if (!cartLayout || !emptyCartMessage) return;
 
-        cartItemsContainer.innerHTML = '';
-        let subtotal = 0;
-
-        // If cart is empty, show a message and zero out the summary
+        // Show the 'empty cart' message if the cart is empty
         if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Your cart is empty.</td></tr>';
-            subtotalElement.textContent = '$0.00';
-            taxesElement.textContent = '$0.00';
-            totalElement.textContent = '$0.00';
-            return;
+            emptyCartMessage.style.display = 'block';
+            cartLayout.style.display = 'none';
+        } else {
+            emptyCartMessage.style.display = 'none';
+            cartLayout.style.display = 'grid'; // Use 'grid' to show the two-column layout
         }
+
+        cartItemsList.innerHTML = ''; // Clear previous items
+        let subtotal = 0;
 
         cart.forEach((item, index) => {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
 
-            const row = document.createElement('tr');
-            // MODIFIED: This now includes the product image next to the name.
-            row.innerHTML = `
-                <td>
-                    <div style="display: flex; align-items: center;">
-                        <img src="${item.imageUrl}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 4px;">
-                        <span>${item.name}</span>
+            // This HTML matches the professional design in your style.css
+            const cartItemHTML = `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="${item.imageUrl}" alt="${item.name}">
                     </div>
-                </td>
-                <td>$${item.price.toFixed(2)}</td>
-                <td>${item.quantity}</td>
-                <td>$${itemTotal.toFixed(2)}</td>
-                <td><button class="remove-btn" data-index="${index}" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1.5em; font-weight: bold;">&times;</button></td>
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        <p class="item-price">$${item.price.toFixed(2)}</p>
+                        <div class="cart-item-actions">
+                            <span>Qty: ${item.quantity}</span>
+                            <button class="remove-btn" data-index="${index}">Remove</button>
+                        </div>
+                    </div>
+                    <div class="cart-item-total">
+                        $${itemTotal.toFixed(2)}
+                    </div>
+                </div>
             `;
-            cartItemsContainer.appendChild(row);
+            cartItemsList.innerHTML += cartItemHTML;
         });
 
         const taxes = subtotal * TAX_RATE;
         const total = subtotal + taxes;
 
-        subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
-        taxesElement.textContent = `$${taxes.toFixed(2)}`;
-        totalElement.textContent = `$${total.toFixed(2)}`;
-    };
-
-    cartItemsContainer.addEventListener('click', (event) => {
-        // Use .closest() to ensure the button is found even if the user clicks an element inside it
-        const removeButton = event.target.closest('.remove-btn');
-        if (removeButton) {
-            const index = removeButton.dataset.index;
-            cart.splice(index, 1); // Remove item from array
-            localStorage.setItem('shoppingCart', JSON.stringify(cart)); // Update storage
-            updateCart(); // Re-render the cart
+        // Update the summary section with calculated totals
+        summarySubtotal.textContent = `$${subtotal.toFixed(2)}`;
+        summaryTaxes.textContent = `$${taxes.toFixed(2)}`;
+        summaryTotal.textContent = `$${total.toFixed(2)}`;
+        
+        // Disable the checkout button if the cart is empty
+        if (checkoutBtn) {
+            checkoutBtn.disabled = cart.length === 0;
         }
-    });
 
-    updateCart();
+        addRemoveListeners();
+    }
+
+    /**
+     * Adds event listeners to all "Remove" buttons.
+     */
+    function addRemoveListeners() {
+        document.querySelectorAll('.remove-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const indexToRemove = parseInt(event.target.dataset.index);
+                removeItemFromCart(indexToRemove);
+            });
+        });
+    }
+
+    /**
+     * Removes an item from the cart array and updates localStorage.
+     * @param {number} index - The index of the item to remove.
+     */
+    function removeItemFromCart(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1); // Remove the item
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        // Notify other parts of the app (like the header count) that the cart has changed
+        document.dispatchEvent(new CustomEvent('cartUpdated'));
+
+        renderCart(); // Re-render the cart page with the item removed
+    }
+
+    // Listen for cart updates that might happen on other pages
+    document.addEventListener('cartUpdated', renderCart);
+
+    // Initial render when the page loads
+    renderCart();
 });
-
