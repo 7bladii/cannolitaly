@@ -1,4 +1,20 @@
+// cart.js - FINAL VERSION WITH TOAST NOTIFICATION
+
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// --- NEW FUNCTION: Shows the toast notification ---
+function showToast(message) {
+    const toast = document.getElementById('toast-notification');
+    if (!toast) return; // Don't run if the element doesn't exist
+
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    // After 3 seconds, remove the show class to fade it out
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000); // 3000 milliseconds = 3 seconds
+}
 
 function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -6,24 +22,24 @@ function saveCart() {
 }
 
 function addToCart(newItem) {
-    // Ordena los sabores alfabéticamente para que el ID sea consistente
-    // y los une con un guion. Ej: "chocolate-pistachio"
+    // Sort flavors alphabetically to create a consistent ID
     const sortedFlavors = newItem.flavors.sort().join('-');
     const compositeId = `${newItem.id}_${newItem.size}_${sortedFlavors}`;
 
     const existingItem = cart.find(item => item.compositeId === compositeId);
 
     if (existingItem) {
-        // Si ya existe un item con la misma combinación de sabores, solo aumenta la cantidad
         existingItem.quantity += newItem.quantity;
     } else {
-        // Si no, añade el nuevo item al carrito
         cart.push({ ...newItem, compositeId: compositeId });
     }
     
     saveCart();
-    // La alerta ahora muestra todos los sabores seleccionados
-    alert(`${newItem.quantity} x ${newItem.name} (${newItem.size}, ${newItem.flavors.join(', ')}) added to cart!`);
+
+    // --- KEY CHANGE: Replaced alert() with showToast() ---
+    // A more professional message in English
+    const message = `${newItem.name} (${newItem.size}) successfully added to cart!`;
+    showToast(message);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
