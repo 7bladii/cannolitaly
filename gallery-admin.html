@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Gallery - Cannolitaly</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.png" alt="Cannolitaly Logo" class="sidebar-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html">Products</a>
+                <a href="gallery-admin.html" class="active">Gallery</a>
+                <a href="orders.html">Orders</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-button" class="btn btn-secondary">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header-bar">
+                <h1>Manage Gallery</h1>
+            </header>
+            
+            <div class="content-wrapper" style="padding: 40px;">
+                <section id="gallery-management-section">
+                    <form id="add-gallery-image-form" style="margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px;">
+                        <h3>Upload New Photo</h3>
+                        <div class="form-group">
+                            <label for="gallery-image-upload">Select an image to upload</label>
+                            <input type="file" id="gallery-image-upload" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn">Upload to Gallery</button>
+                        <p id="gallery-upload-status" style="margin-top: 15px;"></p>
+                    </form>
+                    
+                    <h3>Existing Gallery Photos</h3>
+                    <div id="admin-gallery-grid" class="product-grid-admin">
+                        <p>Loading gallery photos...</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="admin-main.js"></script>
+</body>
+</html>

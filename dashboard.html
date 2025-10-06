@@ -3,31 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Cannolitaly</title>
-    
+    <title>Manage Products - Cannolitaly</title>
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="firebase-init.js"></script>
-    <script>
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user) {
-                window.location.href = 'login.html';
-            }
-        });
-
-        function logout() {
-            firebase.auth().signOut().then(() => {
-                window.location.href = 'login.html';
-            });
-        }
-    </script>
-
     <div class="admin-layout">
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -35,10 +14,11 @@
             </div>
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="active">Products</a>
+                <a href="gallery-admin.html">Gallery</a>
                 <a href="orders.html">Orders</a>
             </nav>
             <div class="sidebar-footer">
-                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                <button id="logout-button" class="btn btn-secondary">Logout</button>
             </div>
         </aside>
 
@@ -48,7 +28,7 @@
                 <button id="add-product-btn" class="btn">+ Add New Product</button>
             </header>
             
-            <div id="product-list" class="product-grid-admin">
+            <div id="product-list" class="product-grid-admin" style="padding: 40px;">
                 </div>
         </main>
     </div>
@@ -68,7 +48,7 @@
                     <textarea id="product-description" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="product-price">Price ($)</label>
+                    <label for="product-price">Large Cannoli Price ($)</label>
                     <input type="number" id="product-price" step="0.01" required>
                 </div>
                 <div class="form-group">
@@ -80,6 +60,11 @@
         </div>
     </div>
 
-    <script src="dashboard.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="admin-main.js"></script>
 </body>
 </html>

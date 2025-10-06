@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
 
@@ -20,8 +19,8 @@
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="shop.html" class="active">Shop</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
                         <li><a href="catering.html">Catering</a></li>
-                        <li><a href="blog.html">Blog</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
@@ -44,8 +43,8 @@
              <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shop.html">Shop</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="catering.html">Catering</a></li>
-                <li><a href="blog.html">Blog</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
@@ -54,7 +53,7 @@
     <main class="main-content">
         <section>
             <div class="container">
-                <a href="#" id="back-link" class="back-link">&larr; Back to Shop</a>
+                <a href="shop.html" class="back-link">&larr; Back to Shop</a>
             </div>
 
             <div class="product-detail-container container">
@@ -65,93 +64,64 @@
         
                 <div class="product-details-column">
                     <h1 id="product-name">Loading...</h1>
+                    <p class="description" id="product-description">Loading description...</p>
                     
-                    <p class="price" id="product-price">$0.00</p>
-                    
-                    <p class="stock-status">In Stock</p>
-                    
-                    <p class="description" id="product-description">
-                        Loading description...
-                    </p>
-        
-                    <div class="add-to-cart-section">
-                        <div class="quantity-selector">
-                            <label for="quantity">Quantity</label>
-                            <input type="number" id="quantity" value="1" min="1">
+                    <form id="product-options-form">
+                        
+                        <div class="option-group">
+                            <label class="option-label">Size:</label>
+                            <div class="radio-buttons">
+                                <input type="radio" id="size-large" name="size" value="large" checked>
+                                <label for="size-large" class="radio-label">Large ($6.00 / each)</label>
+                                
+                                <input type="radio" id="size-small" name="size" value="small">
+                                <label for="size-small" class="radio-label">Small ($3.00 / each)</label>
+                            </div>
                         </div>
-                        <button class="btn add-to-cart-btn">Add to Cart</button>
-                    </div>
-        
+
+                        <div class="option-group">
+                            <label class="option-label">Flavor (Choose one or more):</label>
+                            <div class="checkbox-buttons">
+                                <input type="checkbox" id="flavor-pistachio" name="flavor" value="Pistachio">
+                                <label for="flavor-pistachio" class="checkbox-label">Pistachio</label>
+                                
+                                <input type="checkbox" id="flavor-ricotta" name="flavor" value="Ricotta">
+                                <label for="flavor-ricotta" class="checkbox-label">Ricotta</label>
+
+                                <input type="checkbox" id="flavor-chocolate" name="flavor" value="Chocolate">
+                                <label for="flavor-chocolate" class="checkbox-label">Chocolate</label>
+                            </div>
+                        </div>
+
+                        <div class="option-group">
+                            <label for="quantity" class="option-label">Quantity:</label>
+                            <input type="number" id="quantity" value="12" min="1" class="quantity-input">
+                            <p id="min-order-notice" class="validation-message">Minimum order: 12 Large cannolis</p>
+                        </div>
+
+                        <div class="add-to-cart-section">
+                            <div class="total-price-container">
+                                <span class="total-label">Total Price</span>
+                                <span id="total-price" class="total-price-value">$0.00</span>
+                            </div>
+                            <button type="submit" class="btn add-to-cart-btn">Add to Cart</button>
+                        </div>
+                        
+                    </form>
                 </div>
         
             </div>
-            </section>
+        </section>
     </main>
 
-    <footer class="main-footer">
-         <div class="container footer-grid">
-            <div class="footer-about">
-                <a href="login.html" style="text-decoration: none;">
-                    <h4>About Cannolitaly</h4>
-                </a>
-                <p>Bringing traditional Sicilian desserts to you with love.</p>
-            </div>
-            <div class="footer-contact">
-                <h4>Contact Info</h4>
-                <p>
-                    West Hollywood<br>
-                    <a href="tel:323-617-2445">(323) 617-2445</a>
-                </p>
-            </div>
-            <div class="footer-links">
-                <h4>Navigate</h4>
-                <ul>
-                    <li><a href="mailto:cannolitali@gmail.com">cannolitali@gmail.com</a></li>
-                    <li><a href="tel:323-617-2445">(323) 617-2445</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="container footer-bottom">
-            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
-        </div>
-    </footer>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
-    <script src="firebase-init.js"></script>
-
-    <script src="cart.js"></script> 
-    <script src="product-detail.js"></script>
+<script src="firebase-init.js"></script>
+<script src="cart.js"></script> 
+<script src="product-detail.js"></script>
     
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        AOS.init({
-            duration: 800,
-            once: true
-        });
-
-        const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-        const mobileNav = document.querySelector('.mobile-nav');
-        if (mobileNavToggle && mobileNav) {
-            mobileNavToggle.addEventListener('click', () => {
-                mobileNav.classList.toggle('active');
-            });
-        }
-        
-        // 👇 LÓGICA PARA EL BOTÓN DE VOLVER AÑADIDA AQUÍ 👇
-        const backButton = document.getElementById('back-link');
-        if (backButton) {
-            backButton.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevents the link from navigating to "#"
-                history.back();         // This function navigates to the previous page
-            });
-        }
-    });
-    </script>
-
 </body>
 </html>

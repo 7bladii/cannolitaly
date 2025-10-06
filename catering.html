@@ -8,20 +8,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        /* Hides the cart container only on this page */
+        .header-actions .cart-container {
+            display: none;
+        }
+        /* Hides the login/account icon */
+        .header-actions a[href="account.html"] {
+            display: none;
+        }
+    </style>
 </head>
-<!-- 1. CLASE AÑADIDA AQUÍ para identificar esta página -->
-<body class="catering-page">
+<body>
 
     <header class="main-header">
         <div class="container">
             <div class="header-left-cluster">
-                <!-- 2. RUTA DEL LOGO CORREGIDA -->
                 <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
                 <nav class="main-nav">
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="shop.html">Shop</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
                         <li><a href="catering.html" class="active">Catering</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
@@ -31,10 +40,6 @@
                 <a href="account.html" aria-label="My Account">👤</a>
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">🛒<span class="cart-count">0</span></a>
-                    <div class="cart-preview">
-                        <!-- 3. ID AÑADIDO para que el script del mini-carrito funcione -->
-                        <div id="mini-cart-items"></div>
-                    </div>
                 </div>
                 <button class="mobile-nav-toggle" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
             </div>
@@ -43,6 +48,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shop.html">Shop</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="catering.html">Catering</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
@@ -59,47 +65,69 @@
                 <p style="text-align: center; font-size: 18px; line-height: 1.7;">
                     Bring the magic of Cannolitaly to your next event! We offer catering services for weddings, corporate events, and private parties. We can create custom cannoli platters and even live filling stations to delight your guests.
                 </p>
-
-                <div class="catering-options-list">
-                    <div class="catering-option">
-                        <span class="icon">🎉</span>
-                        <div>
-                            <h3>Small Party</h3>
-                        </div>
-                        <div class="price">Starting from $120</div>
-                    </div>
-                    <div class="catering-option">
-                        <span class="icon">👰</span>
-                        <div>
-                            <h3>Large Events</h3>
-                        </div>
-                        <div class="price">Starting from $600</div>
-                    </div>
-                    <div class="catering-option">
-                        <span class="icon">🏢</span>
-                        <div>
-                            <h3>Corporate Events</h3>
-                            <p>Custom pricing & branding.</p>
-                        </div>
-                        <div class="price">Contact for Quote</div>
-                    </div>
-                </div>
             </div>
         </section>
-    </main>
+        </main>
 
     <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-column footer-about">
+                <img src="images/logo.png" alt="Cannolitaly Logo" class="footer-logo">
+                <p>Bringing traditional Sicilian desserts to you with love and the finest ingredients.</p>
+                <div class="social-icons">
+                    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                </div>
+            </div>
+            <div class="footer-column footer-links">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop Our Menu</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="catering.html">Catering</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column footer-contact">
+                <h4>Contact Us</h4>
+                <p>
+                    West Hollywood, CA<br>
+                    <a href="mailto:contact@cannolitaly.com">contact@cannolitaly.com</a><br>
+                    <a href="tel:+1234567890">(123) 456-7890</a>
+                </p>
+            </div>
+            <div class="footer-column footer-newsletter">
+                <h4>Stay Updated</h4>
+                <p>Get updates on new flavors and special offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email" required>
+                    <button type="submit" class="btn">Sign Up</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Cannolitaly. All rights reserved.</p>
+        </div>
     </footer>
 
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <!-- 4. SCRIPT DEL CARRITO AÑADIDO para que el contador funcione -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="firebase-init.js"></script>
     <script src="cart.js"></script>
+    
     <script>
+        // Script for mobile navigation
         document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                once: true
-            });
+            const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+            const mobileNav = document.querySelector('.mobile-nav');
+            if (mobileNavToggle && mobileNav) {
+                mobileNavToggle.addEventListener('click', () => {
+                    mobileNav.classList.toggle('active');
+                });
+            }
         });
     </script>
 </body>
