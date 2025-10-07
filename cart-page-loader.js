@@ -36,6 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
 
+            // --- CODE ADDED TO DISPLAY FLAVORS ---
+            // 1. Check if the item has flavors and if the list is not empty.
+            let flavorsHtml = ''; // Start with an empty string.
+            if (item.flavors && item.flavors.length > 0) {
+                // 2. If there are flavors, create the HTML to display them.
+                flavorsHtml = `<p class="cart-item-flavors">Flavors: ${item.flavors.join(', ')}</p>`;
+            }
+            // --- END OF ADDED CODE ---
+
             // This HTML matches the professional design in your style.css
             const cartItemHTML = `
                 <div class="cart-item">
@@ -45,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="cart-item-details">
                         <h4>${item.name}</h4>
                         <p class="item-price">$${item.price.toFixed(2)}</p>
+                        ${flavorsHtml}
                         <div class="cart-item-actions">
                             <span>Qty: ${item.quantity}</span>
                             <button class="remove-btn" data-index="${index}">Remove</button>

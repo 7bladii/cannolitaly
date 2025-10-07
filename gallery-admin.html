@@ -23,27 +23,34 @@
         </aside>
 
         <main class="main-content">
+            <button class="sidebar-toggle" aria-label="Toggle Menu">☰</button>
+            
             <header class="main-header-bar">
-                <h1>Manage Gallery</h1>
+                <div class="header-left">
+                    <button onclick="history.back()" class="btn btn-secondary back-button">← Back</button>
+                    <h1>Manage Gallery</h1>
+                </div>
+                <div class="header-right">
+                    <a href="dashboard.html" class="btn btn-secondary">Go to Products</a>
+                </div>
             </header>
             
-            <div class="content-wrapper" style="padding: 40px;">
-                <section id="gallery-management-section">
-                    <form id="add-gallery-image-form" style="margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px;">
-                        <h3>Upload New Photo</h3>
-                        <div class="form-group">
-                            <label for="gallery-image-upload">Select an image to upload</label>
-                            <input type="file" id="gallery-image-upload" accept="image/*" required>
-                        </div>
+            <div style="padding: 20px 40px;">
+                <div class="gallery-upload-section">
+                    <h3>Upload New Photo/Video</h3>
+                    <p>Select an image or video to upload to the gallery.</p>
+                    <form id="upload-form">
+                        <input type="file" id="media-file" accept="image/*,video/*" required>
                         <button type="submit" class="btn">Upload to Gallery</button>
-                        <p id="gallery-upload-status" style="margin-top: 15px;"></p>
                     </form>
-                    
-                    <h3>Existing Gallery Photos</h3>
-                    <div id="admin-gallery-grid" class="product-grid-admin">
-                        <p>Loading gallery photos...</p>
+                </div>
+
+                <div class="gallery-existing-section">
+                    <h3>Existing Gallery Media</h3>
+                    <div id="gallery-list" class="gallery-grid">
+                        <p>Loading media...</p>
                     </div>
-                </section>
+                </div>
             </div>
         </main>
     </div>
@@ -53,6 +60,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="firebase-init.js"></script>
-    <script src="admin-main.js"></script>
+    <script src="gallery-admin.js"></script> 
+    <script src="dashboard-ui.js"></script> 
 </body>
 </html>

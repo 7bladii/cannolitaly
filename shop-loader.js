@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                     <div class="product-info-main">
                         <h3>${productData.name}</h3>
-                        <p class="price">$${displayPrice.toFixed(2)}</p>
                     </div>
                 </a>
             `;

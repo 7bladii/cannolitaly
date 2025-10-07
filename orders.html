@@ -4,30 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Orders - Cannolitaly</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <!-- 👇 LÍNEA AÑADIDA PARA ARREGLAR EL ERROR 👇 -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="firebase-init.js"></script>
-    <script>
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user) window.location.href = 'login.html';
-        });
-    </script>
-
     <div class="admin-layout">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <!-- 👇 RUTA DE LA IMAGEN CORREGIDA 👇 -->
                 <img src="images/logo.png" alt="Cannolitaly Logo" class="sidebar-logo">
             </div>
             <nav class="sidebar-nav">
                 <a href="dashboard.html">Products</a>
+                <a href="gallery-admin.html">Gallery</a>
                 <a href="orders.html" class="active">Orders</a>
             </nav>
             <div class="sidebar-footer">
@@ -36,27 +23,59 @@
         </aside>
 
         <main class="main-content">
+            <button class="sidebar-toggle" aria-label="Toggle Menu">☰</button>
+            
             <header class="main-header-bar">
-                <h1>Manage Orders</h1>
+                <div class="header-left">
+                    <button onclick="history.back()" class="btn btn-secondary back-button">← Back</button>
+                    <h1>Manage Orders</h1>
+                </div>
             </header>
             
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Customer Name</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-list">
-                    <!-- Las órdenes se cargarán aquí con JavaScript -->
-                </tbody>
-            </table>
+            <div class="orders-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        </tbody>
+                </table>
+            </div>
         </main>
     </div>
 
-    <script src="orders.js"></script>
+    <div id="order-detail-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3 id="modal-title">Order Details</h3>
+            <div class="order-details-content">
+                <p><strong>Order ID:</strong> <span id="modal-order-id"></span></p>
+                <p><strong>Customer:</strong> <span id="modal-customer-name"></span></p>
+                <p><strong>Email:</strong> <span id="modal-customer-email"></span></p>
+                <p><strong>Phone:</strong> <span id="modal-customer-phone"></span></p>
+                <p><strong>Address:</strong> <span id="modal-customer-address"></span></p>
+                <p><strong>Date:</strong> <span id="modal-order-date"></span></p>
+                <p><strong>Total:</strong> <span id="modal-order-total"></span></p>
+                <h4>Items:</h4>
+                <ul id="modal-order-items"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="orders-admin.js"></script>
+    <script src="dashboard-ui.js"></script>
 </body>
 </html>

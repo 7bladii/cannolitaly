@@ -1124,3 +1124,50 @@ section {
     opacity: 1;
     bottom: 50px; /* Animate upwards */
 }
+
+.important-note {
+  font-weight: bold;
+  color: #8B4513; /* A strong but elegant brown, like coffee */
+}
+
+/* --- CHECKOUT PAGE STYLES --- */
+.checkout-section {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* Re-using the cart layout for consistency */
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.customer-details h2 {
+    margin-bottom: 1.5rem;
+}
+
+.order-summary h2 {
+    margin-bottom: 1.5rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Responsive adjustments for checkout page */
+@media (max-width: 768px) {
+    .checkout-layout {
+        grid-template-columns: 1fr; /* Stack columns on mobile */
+    }
+    .customer-details {
+        order: 2; /* Show form after the summary on mobile */
+    }
+    .cart-summary-column {
+        order: 1;
+    }
+}
