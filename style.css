@@ -528,7 +528,7 @@ section {
         display: block;
     }
     .logo img {
-        max-height: 85px;
+        max-height: 175px;
     }
     .main-header.scrolled .logo img {
         max-height: 65px;
