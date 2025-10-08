@@ -137,12 +137,12 @@ section {
 }
 
 .logo img {
-    max-height: 85px;
+    max-height: 100px;
     transition: max-height 0.3s ease;
 }
 
 .main-header.scrolled .logo img {
-    max-height: 65px;
+    max-height: 80px;
 }
 
 .main-nav ul {
@@ -281,6 +281,7 @@ section {
     background-image: url('images/hero-background.jpg');
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     text-align: center;
     color: var(--white);
 }
@@ -527,10 +528,10 @@ section {
         display: block;
     }
     .logo img {
-        max-height: 70px;
+        max-height: 85px;
     }
     .main-header.scrolled .logo img {
-        max-height: 55px;
+        max-height: 65px;
     }
     .header-left-cluster {
         gap: 20px;
