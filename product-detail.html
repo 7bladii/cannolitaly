@@ -66,48 +66,51 @@
                     <h1 id="product-name">Loading...</h1>
                     <p class="description" id="product-description">Loading description...</p>
                     
-                    <form id="product-options-form">
+                    <form id="product-options-form" onsubmit="return false;">
                         
                         <div class="option-group">
                             <label class="option-label">Size:</label>
                             <div class="radio-buttons">
-                                <input type="radio" id="size-large" name="size" value="large" checked>
+                                <input type="radio" id="size-large" name="size" value="Large" data-price="6.00" checked>
                                 <label for="size-large" class="radio-label">Large ($6.00 / each)</label>
                                 
-                                <input type="radio" id="size-small" name="size" value="small">
+                                <input type="radio" id="size-small" name="size" value="Small" data-price="3.00">
                                 <label for="size-small" class="radio-label">Small ($3.00 / each)</label>
                             </div>
                         </div>
 
                         <div class="option-group">
-                            <label class="option-label">Flavor (Choose one or more):</label>
-                            <div class="checkbox-buttons">
-                                <input type="checkbox" id="flavor-pistachio" name="flavor" value="Pistachio">
-                                <label for="flavor-pistachio" class="checkbox-label">Pistachio</label>
-                                
-                                <input type="checkbox" id="flavor-ricotta" name="flavor" value="Ricotta">
-                                <label for="flavor-ricotta" class="checkbox-label">Ricotta</label>
-
-                                <input type="checkbox" id="flavor-chocolate" name="flavor" value="Chocolate">
-                                <label for="flavor-chocolate" class="checkbox-label">Chocolate</label>
+                            <h4 class="option-label">Flavor (Choose quantities for each)</h4>
+                            <div id="flavor-options-container">
+                                <div class="flavor-quantity-group">
+                                    <label for="qty-pistachio">Pistachio</label>
+                                    <input type="number" id="qty-pistachio" class="flavor-qty-input" min="0" value="0" data-flavor="Pistachio">
+                                </div>
+                                <div class="flavor-quantity-group">
+                                    <label for="qty-ricotta">Ricotta</label>
+                                    <input type="number" id="qty-ricotta" class="flavor-qty-input" min="0" value="0" data-flavor="Ricotta">
+                                </div>
+                                <div class="flavor-quantity-group">
+                                    <label for="qty-chocolate">Chocolate</label>
+                                    <input type="number" id="qty-chocolate" class="flavor-qty-input" min="0" value="0" data-flavor="Chocolate">
+                                </div>
                             </div>
                         </div>
-
-                        <div class="option-group">
-                            <label for="quantity" class="option-label">Quantity:</label>
-                            <input type="number" id="quantity" value="12" min="1" class="quantity-input">
-                            <p id="min-order-notice" class="validation-message">Minimum order: 12 Large cannolis</p>
+                
+                        <div class="total-quantity-container">
+                            <h4>Total Quantity:</h4>
+                            <span id="total-quantity-display">0</span>
                         </div>
+                
+                        <div id="validation-message" class="validation-message" style="color: var(--danger-color); margin-top: 15px;"></div>
 
-                        <div class="add-to-cart-section">
-                            <div class="total-price-container">
-                                <span class="total-label">Total Price</span>
-                                <span id="total-price" class="total-price-value">$0.00</span>
-                            </div>
-                            <button type="submit" class="btn add-to-cart-btn">Add to Cart</button>
+                        <div class="total-price-container">
+                            <h4>Total Price</h4>
+                            <span id="total-price-display" class="total-price-value">$0.00</span>
                         </div>
-                        
-                    </form>
+                
+                        <button id="add-to-cart-btn" class="btn add-to-cart-btn">Add to Cart</button>
+                        </form>
                 </div>
         
             </div>
@@ -115,46 +118,7 @@
     </main>
 
     <footer class="main-footer">
-        <div class="container footer-grid">
-            <div class="footer-column footer-about">
-                <img src="images/logo.png" alt="Cannolitaly Logo" class="footer-logo">
-                <p>Bringing traditional Sicilian desserts to you with love and the finest ingredients.</p>
-                <div class="social-icons">
-                    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
-                    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
-                </div>
-            </div>
-            <div class="footer-column footer-links">
-                <h4>Navigate</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="shop.html">Shop Our Menu</a></li>
-                    <li><a href="gallery.html">Gallery</a></li>
-                    <li><a href="catering.html">Catering</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-column footer-contact">
-                <h4>Contact Us</h4>
-                <p>
-                    West Hollywood, CA<br>
-                    <a href="mailto:contact@cannolitaly.com">contact@cannolitaly.com</a><br>
-                    <a href="tel:+1234567890">(123) 456-7890</a>
-                </p>
-            </div>
-            <div class="footer-column footer-newsletter">
-                <h4>Stay Updated</h4>
-                <p>Get updates on new flavors and special offers.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Your email" required>
-                    <button type="submit" class="btn">Sign Up</button>
-                </form>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2025 Cannolitaly. All rights reserved.</p>
-        </div>
-    </footer>
+        </footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>

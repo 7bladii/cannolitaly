@@ -1076,3 +1076,65 @@ section {
     transform: translateZ(0); /* Estándar */
     backface-visibility: hidden; /* Ayuda a prevenir parpadeos */
 }
+
+/* --- Estilos Profesionales para Selección de Sabores --- */
+
+.flavor-quantity-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 12px 15px; /* Un poco más de padding vertical */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #fff;
+    /* --- MEJORA: Transición suave --- */
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* --- MEJORA: Efecto Hover sutil --- */
+.flavor-quantity-group:hover {
+    background-color: #fcfcfc;
+    border-color: #ccc;
+}
+
+.flavor-quantity-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.flavor-quantity-group input {
+    width: 70px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 1.1rem; /* Un poco más grande para mejor lectura */
+    /* --- MEJORA: Transición para el foco --- */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- MEJORA: Resaltado al hacer clic en el input --- */
+.flavor-quantity-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(107, 79, 67, 0.15);
+}
+
+.total-quantity-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- MEJORA: Hacer que el número total resalte más --- */
+#total-quantity-display {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
