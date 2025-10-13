@@ -9,16 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const uploadForm = document.getElementById('upload-form');
     const mediaFileInput = document.getElementById('media-file');
-    const posterFileInput = document.getElementById('poster-file'); // Nuevo campo
+    const posterFileInput = document.getElementById('poster-file');
     const galleryList = document.getElementById('gallery-list');
     const uploadButton = uploadForm.querySelector('button');
 
-    // --- 1. SUBIR NUEVOS ARCHIVOS (CON LÓGICA DE POSTER) ---
+    // --- 1. SUBIR NUEVOS ARCHIVOS (CON POSTER Y ORDEN) ---
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const mediaFiles = mediaFileInput.files;
-        const posterFile = posterFileInput.files[0]; // El poster es solo uno
+        const posterFile = posterFileInput.files[0];
 
         if (mediaFiles.length === 0) {
             alert('Please select at least one main file to upload.');
@@ -32,33 +32,31 @@ document.addEventListener('DOMContentLoaded', () => {
         let posterUrl = null;
 
         try {
-            // --- PASO A: Subir la imagen de portada PRIMERO (si existe) ---
+            // Sube la imagen de portada primero (si existe)
             if (posterFile) {
-                console.log('Uploading poster image...');
                 const posterPath = `gallery/posters/${Date.now()}_${posterFile.name}`;
                 const posterRef = storage.ref(posterPath);
                 const posterUploadTask = await posterRef.put(posterFile);
                 posterUrl = await posterUploadTask.ref.getDownloadURL();
-                console.log('Poster uploaded successfully:', posterUrl);
             }
 
-            // --- PASO B: Subir los archivos principales (fotos/videos) ---
+            // Sube los archivos principales
             for (const file of mediaFiles) {
                 const filePath = `gallery/${Date.now()}_${file.name}`;
                 const fileRef = storage.ref(filePath);
-                
                 const uploadTask = await fileRef.put(file);
                 const downloadURL = await uploadTask.ref.getDownloadURL();
 
-                // Creamos el objeto para guardar en Firestore
+                // Objeto de datos para Firestore
                 const firestoreData = {
                     url: downloadURL,
                     path: filePath,
                     type: file.type,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    order: Date.now() // Asigna un número de orden inicial
                 };
 
-                // Si subimos un poster, lo añadimos al objeto
+                // Si hay un poster y el archivo es un video, lo añade
                 if (posterUrl && file.type.startsWith('video')) {
                     firestoreData.posterUrl = posterUrl;
                 }
@@ -70,34 +68,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Error during upload:", error);
-            alert('An error occurred during the upload. Please check the console.');
+            alert('An error occurred during the upload.');
         } finally {
-            // Limpiar y restaurar el formulario al final
             uploadForm.reset();
             uploadButton.textContent = originalButtonText;
             uploadButton.disabled = false;
-            loadAdminGallery(); // Recargar la lista de la galería
+            loadAdminGallery();
         }
     });
 
-    // --- 2. MOSTRAR GALERÍA EXISTENTE (Sin cambios) ---
+    // --- 2. MOSTRAR GALERÍA (ORDENADA Y ARRASTRABLE) ---
     async function loadAdminGallery() {
         galleryList.innerHTML = '<p>Loading media...</p>';
         try {
-            const snapshot = await db.collection('gallery').orderBy('createdAt', 'desc').get();
-            if (snapshot.empty) {
-                galleryList.innerHTML = '<p>No media has been uploaded yet.</p>';
-                return;
-            }
+            // Ordena por el campo 'order'
+            const snapshot = await db.collection('gallery').orderBy('order').get();
+            
             galleryList.innerHTML = '';
             snapshot.forEach(doc => {
                 const media = doc.data();
                 const mediaId = doc.id;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'gallery-item';
+                itemDiv.setAttribute('data-id', mediaId); // Guarda el ID para reordenar
 
                 if (media.type && media.type.startsWith('video')) {
-                    // Si el video tiene un poster, lo usamos como vista previa
                     const preview = media.posterUrl ? `<img src="${media.posterUrl}" alt="Video Poster">` : `<video src="${media.url}" muted></video>`;
                     itemDiv.innerHTML = preview;
                 } else {
@@ -111,18 +106,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemDiv.appendChild(deleteBtn);
                 galleryList.appendChild(itemDiv);
             });
+
+            // Inicializa la funcionalidad de arrastrar y soltar
+            initSortable();
+
         } catch (error) {
             console.error("Error loading admin gallery:", error);
         }
     }
 
-    // --- 3. BORRAR ARCHIVOS (Sin cambios) ---
+    // --- 3. INICIALIZAR DRAG-AND-DROP ---
+    function initSortable() {
+        if (window.Sortable) {
+            new Sortable(galleryList, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: saveOrder // Llama a la función de guardar cuando se suelta un item
+            });
+        }
+    }
+
+    // --- 4. GUARDAR EL NUEVO ORDEN ---
+    async function saveOrder() {
+        const items = galleryList.querySelectorAll('.gallery-item');
+        const batch = db.batch();
+
+        items.forEach((item, index) => {
+            const docId = item.getAttribute('data-id');
+            if (docId) {
+                const docRef = db.collection('gallery').doc(docId);
+                batch.update(docRef, { order: index }); // Actualiza el 'order' con la nueva posición
+            }
+        });
+
+        try {
+            await batch.commit();
+            console.log('New order saved successfully!');
+        } catch (error) {
+            console.error('Error saving new order:', error);
+        }
+    }
+
+    // --- 5. BORRAR ARCHIVOS ---
     async function deleteMedia(docId, filePath) {
         if (!confirm('Are you sure you want to permanently delete this item?')) return;
         try {
             await db.collection('gallery').doc(docId).delete();
             await storage.ref(filePath).delete();
-            // También deberíamos borrar el poster de Storage si existe, pero lo omitimos por simplicidad
+            // Nota: La lógica para borrar el poster de Storage no está incluida por simplicidad.
             loadAdminGallery();
         } catch (error) {
             console.error("Error deleting media:", error);

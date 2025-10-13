@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const db = firebase.firestore();
 
-    db.collection('gallery').orderBy('createdAt', 'desc').get()
+    db.collection('gallery').orderBy('order').get()
       .then((querySnapshot) => {
         
         if (querySnapshot.empty) {
