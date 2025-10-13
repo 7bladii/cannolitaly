@@ -26,38 +26,58 @@
             <button class="sidebar-toggle" aria-label="Toggle Menu">☰</button>
             
             <header class="main-header-bar">
-                <h1>Products</h1>
-                <button id="add-product-btn" class="btn">+ Add New Product</button>
+                <div class="header-left"><h1>Products</h1></div>
+                <div class="header-right"><button id="add-product-btn" class="btn">+ Add New Product</button></div>
             </header>
             
-            <div id="product-list" class="product-grid-admin" style="padding: 40px;">
-                </div>
+            <div class="content-wrapper">
+                <div id="product-grid-admin" class="product-grid-admin"><p>Loading products...</p></div>
+            </div>
         </main>
     </div>
 
     <div id="product-modal" class="modal-overlay">
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h3 id="modal-title">Add New Product</h3>
+            <button class="modal-close-btn">&times;</button>
+            <h2 id="modal-title">Add New Product</h2>
             <form id="product-form">
                 <input type="hidden" id="product-id">
                 <div class="form-group">
-                    <label for="product-name">Name</label>
+                    <label for="product-name">Product Name</label>
                     <input type="text" id="product-name" required>
                 </div>
                 <div class="form-group">
                     <label for="product-description">Description</label>
                     <textarea id="product-description" rows="4" required></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="product-price">Large Cannoli Price ($)</label>
-                    <input type="number" id="product-price" step="0.01" required>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price-large">Price (Large)</label>
+                        <input type="number" id="price-large" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price-small">Price (Small)</label>
+                        <input type="number" id="price-small" step="0.01" required>
+                    </div>
                 </div>
+
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="min-large">Minimum Order (Large)</label>
+                        <input type="number" id="min-large" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="min-small">Minimum Order (Small)</label>
+                        <input type="number" id="min-small" required>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="product-image">Image</label>
+                    <label for="product-image">Product Image</label>
                     <input type="file" id="product-image" accept="image/*">
                 </div>
-                <button type="submit" class="btn">Save Product</button>
+                <button type="submit" class="btn" style="width: 100%;">Save Product</button>
             </form>
         </div>
     </div>
@@ -67,7 +87,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="firebase-init.js"></script>
-    <script src="admin-main.js"></script>
-    <script src="dashboard-ui.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="dashboard-ui.js"></script> 
 </body>
 </html>
