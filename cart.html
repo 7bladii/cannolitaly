@@ -19,8 +19,8 @@
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="shop.html">Shop</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
                         <li><a href="catering.html">Catering</a></li>
-                        <li><a href="blog.html">Blog</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
@@ -28,65 +28,57 @@
             <div class="header-actions">
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                         <span class="cart-count">0</span>
                     </a>
                 </div>
-            </div>
+                </div>
         </div>
-    </header>
+        </header>
 
     <main>
-        <section class="cart-section container">
-            <h1>Your Cart</h1>
-    
-            <div class="cart-layout">
-    
-                <div class="cart-items-column">
-                    <div class="cart-header">
-                        <span>Product</span>
-                        <span class="text-right">Total</span>
+        <section class="cart-section">
+            <div class="container">
+                <h1>Your Cart</h1>
+
+                <div class="cart-layout">
+                    <div class="cart-items-column">
+                        <div id="cart-items-container">
+                            </div>
                     </div>
-                    <div id="cart-items-list">
+
+                    <aside class="cart-summary-column">
+                        <div class="cart-summary">
+                            <h2>Order Summary</h2>
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="cart-subtotal">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping & Taxes</span>
+                                <span>Calculated at checkout</span>
+                            </div>
+                            <hr>
+                            <div class="summary-total">
+                                <span>Total</span>
+                                <span id="cart-total">$0.00</span>
+                            </div>
+                            <a href="checkout.html" class="btn" style="width: 100%; margin-top: 1rem;">Proceed to Checkout</a>
+                            <p class="payment-note" style="margin-top: 1rem;">
+                                <strong>Please Note:</strong> Payment will be collected in cash upon delivery.
+                            </p>
                         </div>
+                    </aside>
                 </div>
-    
-                <aside class="cart-summary-column">
-                    <div class="cart-summary">
-                        <h2>Cart Summary</h2>
-                        <div class="summary-row">
-                            <span>Subtotal</span>
-                            <span id="summary-subtotal">$0.00</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Taxes (estimated)</span>
-                            <span id="summary-taxes">$0.00</span>
-                        </div>
-                        <hr>
-                        <div class="summary-total">
-                            <span>Total</span>
-                            <span id="summary-total">$0.00</span>
-                        </div>
-                        
-                        <a href="checkout.html" id="checkout-btn" class="btn">Proceed to Checkout</a>
-                        
-                        <p class="payment-note">
-                            <strong>Please Note:</strong> Payment will be collected in cash by the driver upon delivery.
-                        </p>
-                    </div>
-                </aside>
-            </div>
-    
-            <div id="empty-cart-message" class="empty-cart" style="display: none;">
-                <h2>Your cart is empty.</h2>
-                <a href="shop.html" class="btn">Continue Shopping</a>
             </div>
         </section>
     </main>
+
     <footer class="main-footer">
         </footer>
 
-    <script src="cart.js"></script>
-    <script src="cart-page-loader.js"></script>
+    <div id="toast-notification"></div>
 
-</body>
+    <script src="cart.js"></script>
+    </body>
 </html>

@@ -1,105 +1,139 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof firebase === 'undefined') return;
-
+    if (typeof firebase === 'undefined' || typeof firebase.firestore === 'undefined') {
+        console.error("Firebase or Firestore is not loaded.");
+        return;
+    }
     const db = firebase.firestore();
-    const ordersTableBody = document.getElementById('orders-table-body');
-    const modal = document.getElementById('order-detail-modal');
-    const modalCloseBtn = document.querySelector('.modal-close');
-    
-    if (!ordersTableBody || !modal || !modalCloseBtn) {
-        console.error("Essential elements for the orders page are missing.");
+
+    const ordersTbody = document.getElementById('orders-tbody');
+    const modal = document.getElementById('order-details-modal');
+    const modalBody = document.getElementById('modal-body');
+    const closeModalBtn = document.querySelector('.modal-close-btn');
+
+    if (!ordersTbody || !modal || !modalBody || !closeModalBtn) {
+        console.error("One or more essential elements for the orders page are missing.");
         return;
     }
 
-    // --- 1. Fetch and Display Orders ---
+    // --- 1. LOAD ORDERS ---
     async function loadOrders() {
-        ordersTableBody.innerHTML = '<tr><td colspan="7">Loading orders...</td></tr>';
-        
         try {
             const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').get();
-            
+            ordersTbody.innerHTML = ''; 
+
             if (snapshot.empty) {
-                ordersTableBody.innerHTML = '<tr><td colspan="7">No orders found.</td></tr>';
+                ordersTbody.innerHTML = '<tr><td colspan="8">No orders found.</td></tr>';
                 return;
             }
-            
-            ordersTableBody.innerHTML = '';
+
             snapshot.forEach(doc => {
-                const order = doc.data();
-                const orderId = doc.id;
-                
+                const order = { id: doc.id, ...doc.data() };
+                const orderDate = order.createdAt.toDate().toLocaleDateString();
                 const row = document.createElement('tr');
-                // **KEY CHANGE**: Added phone/address and data-labels for mobile view
+                
+                // --- MEJORA: Combinar ambas direcciones para la tabla ---
+                const fullAddress = order.customerAddress2 
+                    ? `${order.customerAddress}, ${order.customerAddress2}` 
+                    : order.customerAddress;
+
                 row.innerHTML = `
-                    <td data-label="Order ID">${orderId.substring(0, 8)}...</td>
+                    <td data-label="Order ID">${order.id.substring(0, 8)}...</td>
                     <td data-label="Customer">${order.customerName}</td>
-                    <td data-label="Phone">${order.customerPhone || 'N/A'}</td>
-                    <td data-label="Address">${order.customerAddress || 'N/A'}</td>
-                    <td data-label="Date">${new Date(order.createdAt.seconds * 1000).toLocaleDateString()}</td>
+                    <td data-label="Phone">${order.customerPhone}</td>
+                    <td data-label="Address">${fullAddress}</td>
+                    <td data-label="Date">${orderDate}</td>
                     <td data-label="Total">$${order.total.toFixed(2)}</td>
+                    <td data-label="Status"><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
                     <td data-label="Actions">
-                        <span class="status status-${order.status.toLowerCase()}">${order.status}</span>
-                        <button class="btn btn-secondary view-details-btn" data-id="${orderId}">Details</button>
+                        <button class="btn btn-secondary details-btn" data-id="${order.id}">Details</button>
+                        <button class="btn btn-action change-status-btn" data-id="${order.id}" data-status="${order.status}">Toggle Status</button>
+                        <button class="btn btn-danger delete-btn" data-id="${order.id}">Delete</button>
                     </td>
                 `;
-                ordersTableBody.appendChild(row);
+                ordersTbody.appendChild(row);
             });
-
-            addDetailButtonListeners();
+            
+            addEventListenersToButtons();
 
         } catch (error) {
             console.error("Error loading orders:", error);
-            ordersTableBody.innerHTML = '<tr><td colspan="7">Error loading orders.</td></tr>';
         }
     }
 
-    // --- 2. Show Order Details in a Modal ---
-    function addDetailButtonListeners() {
-        document.querySelectorAll('.view-details-btn').forEach(button => {
-            button.addEventListener('click', async (e) => {
-                const orderId = e.target.dataset.id;
-                await showOrderDetails(orderId);
-            });
+    // --- 2. ADD EVENT LISTENERS ---
+    function addEventListenersToButtons() {
+        document.querySelectorAll('.details-btn').forEach(button => {
+            button.addEventListener('click', (e) => showOrderDetails(e.target.dataset.id));
+        });
+        document.querySelectorAll('.change-status-btn').forEach(button => {
+            button.addEventListener('click', (e) => updateOrderStatus(e.target.dataset.id, e.target.dataset.status));
+        });
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', (e) => deleteOrder(e.target.dataset.id));
         });
     }
+    
+    // --- 3. UPDATE & DELETE FUNCTIONS ---
+    async function updateOrderStatus(orderId, currentStatus) {
+        const newStatus = currentStatus === 'Pending' ? 'Completed' : 'Pending';
+        if (confirm(`Change order status to "${newStatus}"?`)) {
+            await db.collection('orders').doc(orderId).update({ status: newStatus });
+            loadOrders();
+        }
+    }
+    async function deleteOrder(orderId) {
+        if (confirm('Are you sure you want to permanently delete this order?')) {
+            await db.collection('orders').doc(orderId).delete();
+            loadOrders();
+        }
+    }
 
+    // --- 4. SHOW ORDER DETAILS MODAL ---
     async function showOrderDetails(orderId) {
-        const doc = await db.collection('orders').doc(orderId).get();
-        if (!doc.exists) return;
+        try {
+            const doc = await db.collection('orders').doc(orderId).get();
+            if (!doc.exists) return;
+            const order = doc.data();
 
-        const order = doc.data();
-        
-        document.getElementById('modal-order-id').textContent = orderId;
-        document.getElementById('modal-customer-name').textContent = order.customerName;
-        document.getElementById('modal-customer-email').textContent = order.customerEmail;
-        // **KEY CHANGE**: Added phone and address to the modal
-        document.getElementById('modal-customer-phone').textContent = order.customerPhone || 'Not provided';
-        document.getElementById('modal-customer-address').textContent = order.customerAddress || 'Not provided';
-        document.getElementById('modal-order-date').textContent = new Date(order.createdAt.seconds * 1000).toLocaleString();
-        document.getElementById('modal-order-total').textContent = `$${order.total.toFixed(2)}`;
-        
-        const itemsList = document.getElementById('modal-order-items');
-        itemsList.innerHTML = '';
-        order.items.forEach(item => {
-            const li = document.createElement('li');
-            const flavors = item.flavors && item.flavors.length > 0 ? `(${item.flavors.join(', ')})` : '';
-            li.textContent = `${item.quantity} x ${item.name} ${flavors} - $${(item.price * item.quantity).toFixed(2)}`;
-            itemsList.appendChild(li);
-        });
+            let itemsHTML = '<h4>Items:</h4><div id="modal-items-list">';
+            order.items.forEach(item => {
+                const flavorsBreakdown = Object.entries(item.flavors)
+                    .map(([flavor, qty]) => `<li>${qty}x ${flavor}</li>`).join('');
+                itemsHTML += `
+                    <div class="item">
+                        <strong>${item.totalQuantity}x ${item.name} (${item.size})</strong>
+                        <ul>${flavorsBreakdown}</ul>
+                    </div>`;
+            });
+            itemsHTML += '</div>';
 
-        modal.style.display = 'flex';
+            // --- MEJORA: Mostrar la dirección 2 en una línea separada en el modal ---
+            modalBody.innerHTML = `
+                <p><strong>Order ID:</strong> ${doc.id}</p>
+                <p><strong>Customer:</strong> ${order.customerName}</p>
+                <p><strong>Email:</strong> ${order.customerEmail}</p>
+                <p><strong>Phone:</strong> ${order.customerPhone}</p>
+                <p><strong>Address:</strong> ${order.customerAddress}</p>
+                ${order.customerAddress2 ? `<p><strong>Apt/Suite:</strong> ${order.customerAddress2}</p>` : ''}
+                <p><strong>Date:</strong> ${order.createdAt.toDate().toLocaleString()}</p>
+                <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
+                ${itemsHTML}`;
+            
+            modal.classList.add('visible');
+        } catch (error) {
+            console.error("Error fetching order details:", error);
+        }
     }
 
-    // --- 3. Close the Modal ---
-    modalCloseBtn.onclick = () => {
-        modal.style.display = 'none';
-    };
-    window.onclick = (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    };
-
-    // Initial load
+    // --- 5. MODAL CLOSE LOGIC ---
+    function closeModal() {
+        modal.classList.remove('visible');
+    }
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    
+    // --- INITIAL LOAD ---
     loadOrders();
 });
