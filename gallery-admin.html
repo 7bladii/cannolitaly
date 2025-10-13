@@ -38,9 +38,19 @@
             <div style="padding: 20px 40px;">
                 <div class="gallery-upload-section">
                     <h3>Upload New Photo/Video</h3>
-                    <p>Select an image or video to upload to the gallery.</p>
+                    <p>Select images or videos to upload. For videos, you can add an optional poster image.</p>
+                    
                     <form id="upload-form">
-                        <input type="file" id="media-file" accept="image/*,video/*" required>
+                        <div class="form-group">
+                            <label for="media-file"><strong>Paso 1:</strong> Archivos Principales (Fotos o Videos)</label>
+                            <input type="file" id="media-file" accept="image/*,video/*" required multiple>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="poster-file"><strong>Paso 2:</strong> Imagen de Portada (Opcional, para videos)</label>
+                            <input type="file" id="poster-file" accept="image/*">
+                        </div>
+                        
                         <button type="submit" class="btn">Upload to Gallery</button>
                     </form>
                 </div>

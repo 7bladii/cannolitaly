@@ -1,51 +1,85 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const db = firebase.firestore();
     const galleryGrid = document.getElementById('gallery-grid');
-
-    async function loadGallery() {
-        if (!galleryGrid) return;
-        galleryGrid.innerHTML = '<p>Loading gallery...</p>';
-
-        try {
-            // Fetches from the 'gallery' collection to match the admin script
-            const snapshot = await db.collection('gallery').orderBy('createdAt', 'desc').get();
-            
-            if (snapshot.empty) {
-                galleryGrid.innerHTML = '<p>The gallery is currently empty.</p>';
-                return;
-            }
-
-            galleryGrid.innerHTML = ''; // Clear loading message
-            snapshot.forEach(doc => {
-                const media = doc.data();
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item';
-
-                // **KEY CHANGE**: Checks if the media is a video or an image
-                if (media.type && media.type.startsWith('video')) {
-                    // If it's a video, create a <video> element
-                    galleryItem.innerHTML = `
-                        <video controls>
-                            <source src="${media.url}" type="${media.type}">
-                            Your browser does not support the video tag.
-                        </video>
-                    `;
-                } else {
-                    // Otherwise, create an <img> element inside a link
-                    galleryItem.innerHTML = `
-                        <a href="${media.url}" target="_blank">
-                            <img src="${media.url}" alt="Gallery image">
-                        </a>
-                    `;
-                }
-                galleryGrid.appendChild(galleryItem);
-            });
-
-        } catch (error) {
-            console.error("Error loading gallery:", error);
-            galleryGrid.innerHTML = '<p>Could not load the gallery at this time.</p>';
-        }
+    if (!galleryGrid) {
+        console.error('Gallery grid element not found!');
+        return;
     }
 
-    loadGallery();
+    if (typeof firebase === 'undefined') {
+        galleryGrid.innerHTML = '<p>Error: Firebase is not connected.</p>';
+        console.error("Firebase is not initialized.");
+        return;
+    }
+
+    const db = firebase.firestore();
+
+    db.collection('gallery').orderBy('createdAt', 'desc').get()
+      .then((querySnapshot) => {
+        
+        if (querySnapshot.empty) {
+            galleryGrid.innerHTML = '<p>No photos or videos have been added yet.</p>';
+            return;
+        }
+
+        galleryGrid.innerHTML = '';
+
+        querySnapshot.forEach((doc) => {
+            const media = doc.data();
+            if (!media.url) return;
+
+            // Lógica para Videos (Reescrita con createElement)
+            if (media.type && media.type.startsWith('video')) {
+                const videoLink = document.createElement('a');
+                videoLink.href = media.url;
+                videoLink.setAttribute('data-fancybox', 'gallery');
+                videoLink.setAttribute('data-autoplay', 'true');
+                videoLink.setAttribute('data-muted', 'true');
+                
+                // --- CAMBIO CLAVE: Construimos el video paso a paso ---
+                const videoEl = document.createElement('video');
+                
+                // 1. Asignamos la URL
+                videoEl.src = `${media.url}#t=0.1`;
+                
+                // 2. Asignamos los atributos
+                videoEl.muted = true;
+                videoEl.playsInline = true; // En JS, 'playsinline' se escribe 'playsInline'
+                videoEl.preload = 'metadata';
+                
+                // 3. Asignamos el poster si existe
+                if (media.posterUrl) {
+                    videoEl.poster = media.posterUrl;
+                }
+                
+                // 4. Añadimos el video construido al enlace
+                videoLink.appendChild(videoEl);
+                galleryGrid.appendChild(videoLink);
+
+            // Lógica para Imágenes (Sin cambios)
+            } else {
+                const imageLink = document.createElement('a');
+                imageLink.href = media.url;
+                imageLink.setAttribute('data-fancybox', 'gallery');
+                
+                const img = document.createElement('img');
+                img.src = media.url;
+                img.alt = 'Cannolitaly Gallery Photo';
+
+                imageLink.appendChild(img);
+                galleryGrid.appendChild(imageLink);
+            }
+        });
+
+        Fancybox.bind('[data-fancybox="gallery"]', {
+            on: {
+                close: () => {
+                     document.querySelectorAll('video').forEach(vid => vid.pause());
+                }
+            }
+        });
+
+    }).catch((error) => {
+        console.error("Error loading gallery:", error);
+        galleryGrid.innerHTML = '<p>Could not load the gallery at this time.</p>';
+    });
 });
