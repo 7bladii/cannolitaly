@@ -1,12 +1,10 @@
-// cart.js - FINAL VERSION (Handles flavor objects and shows toast notifications)
+// cart.js - MODIFICADO para permitir editar y eliminar items desde el carrito
 
 let cart = [];
 
-// --- 1. TOAST NOTIFICATION FUNCTION ---
 function showToast(message) {
     const toast = document.getElementById('toast-notification');
     if (!toast) {
-        // Fallback to alert if toast element is not on the page
         alert(message);
         return;
     }
@@ -17,33 +15,23 @@ function showToast(message) {
     }, 3000);
 }
 
-// --- 2. CORE CART FUNCTIONS ---
-
-// Load cart from localStorage when the page starts
 function loadCart() {
     const cartData = localStorage.getItem('cannolitalyCart');
     cart = cartData ? JSON.parse(cartData) : [];
     updateCartDisplay();
 }
 
-// Save cart to localStorage and notify other parts of the site
 function saveCart() {
     localStorage.setItem('cannolitalyCart', JSON.stringify(cart));
-    // This custom event lets the header cart icon update itself
     document.dispatchEvent(new CustomEvent('cartUpdated'));
 }
 
-// --- 3. ADD ITEM TO CART (CORRECTED LOGIC) ---
 function addToCart(newItem) {
-    // Find if an item with the same ID and size already exists
     const existingItemIndex = cart.findIndex(item => item.id === newItem.id && item.size === newItem.size);
 
     if (existingItemIndex > -1) {
-        // If it exists, update the quantities
         const existingItem = cart[existingItemIndex];
         existingItem.totalQuantity += newItem.totalQuantity;
-
-        // Merge the quantities of each flavor
         for (const flavor in newItem.flavors) {
             if (existingItem.flavors[flavor]) {
                 existingItem.flavors[flavor] += newItem.flavors[flavor];
@@ -52,23 +40,17 @@ function addToCart(newItem) {
             }
         }
     } else {
-        // If it's a new item, add it to the cart
-        // NO .sort() IS NEEDED, THIS FIXES THE ERROR
         cart.push(newItem);
     }
 
     saveCart();
-    updateCartDisplay(); // Update all visual parts of the cart
-
-    // Use the toast notification for a professional look
+    updateCartDisplay(); 
     showToast(`${newItem.totalQuantity} cannoli added to cart!`);
 }
 
-// --- 4. UPDATE ALL CART DISPLAYS ---
 function updateCartDisplay() {
     updateCartIconCount();
-    updateCartPage(); // This will render items on your cart.html
-    // You can add a function for the cart preview dropdown here as well
+    updateCartPage(); 
 }
 
 function updateCartIconCount() {
@@ -81,10 +63,10 @@ function updateCartIconCount() {
     cartCountEl.style.display = totalItems > 0 ? 'flex' : 'none';
 }
 
+// --- MODIFICADO: Esta es la función principal que actualizamos ---
 function updateCartPage() {
-    // This function populates your main cart.html page
     const cartItemsContainer = document.getElementById('cart-items-container');
-    if (!cartItemsContainer) return; // Only run on the cart page
+    if (!cartItemsContainer) return;
 
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = `
@@ -93,17 +75,34 @@ function updateCartPage() {
                 <a href="shop.html" class="btn">Continue Shopping</a>
             </div>
         `;
-        // Also hide the summary or totals if you have them
+        // Ocultar resumen si el carrito está vacío
+        const orderSummary = document.querySelector('.order-summary');
+        if(orderSummary) orderSummary.style.display = 'none';
         return;
+    } else {
+        const orderSummary = document.querySelector('.order-summary');
+        if(orderSummary) orderSummary.style.display = 'block';
     }
 
     let cartHTML = '';
     let subtotal = 0;
 
     cart.forEach(item => {
-        // Generate the HTML list for the flavor breakdown
+        // Genera inputs editables para cada sabor
         const flavorsBreakdown = Object.entries(item.flavors)
-            .map(([flavor, qty]) => `<li>${qty}x ${flavor}</li>`)
+            .map(([flavor, qty]) => `
+                <li class="cart-flavor-item">
+                    <span>${flavor}</span>
+                    <input 
+                        type="number" 
+                        class="flavor-qty-input-cart" 
+                        value="${qty}" 
+                        min="0"
+                        data-item-id="${item.id}"
+                        data-flavor-name="${flavor}"
+                    >
+                </li>
+            `)
             .join('');
 
         const itemTotal = item.totalQuantity * item.pricePer;
@@ -115,15 +114,15 @@ function updateCartPage() {
                     <img src="${item.imageUrl}" alt="${item.name}">
                 </div>
                 <div class="cart-item-details">
-                    <h4>${item.name}</h4>
-                    <p class="item-price">Size: ${item.size}</p>
-                    <ul class="flavor-breakdown">${flavorsBreakdown}</ul>
+                    <h4>${item.name} (${item.size})</h4>
+                    <ul class="flavor-breakdown-editable">${flavorsBreakdown}</ul>
                 </div>
-                <div class="cart-item-actions">
-                    <span>Qty: ${item.totalQuantity}</span>
-                </div>
-                <div class="cart-item-total">
-                    $${itemTotal.toFixed(2)}
+                <div class="cart-item-actions-total">
+                    <button class="delete-item-btn-cart" data-item-id="${item.id}">🗑️</button>
+                    <div class="cart-item-total">
+                        <p>Qty: ${item.totalQuantity}</p>
+                        <strong>$${itemTotal.toFixed(2)}</strong>
+                    </div>
                 </div>
             </div>
         `;
@@ -131,14 +130,63 @@ function updateCartPage() {
 
     cartItemsContainer.innerHTML = cartHTML;
     
-    // Update summary totals on the cart page
     const subtotalEl = document.getElementById('cart-subtotal');
     const totalEl = document.getElementById('cart-total');
     if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`; // Assuming no tax/shipping for now
+    if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
 }
 
 
-// --- 5. INITIAL LOAD ---
-// Load the cart as soon as the page is ready
-document.addEventListener('DOMContentLoaded', loadCart);
+// --- NUEVO: Lógica para manejar la interactividad en la página del carrito ---
+function handleCartPageUpdate(event) {
+    const target = event.target;
+
+    // Caso 1: Clic en el botón de eliminar
+    if (target.classList.contains('delete-item-btn-cart')) {
+        const itemId = target.dataset.itemId;
+        const itemIndex = cart.findIndex(item => item.id === itemId);
+        if (itemIndex > -1) {
+            cart.splice(itemIndex, 1);
+            saveCart();
+            updateCartPage(); // Redibuja el carrito
+        }
+    }
+
+    // Caso 2: Cambio en la cantidad de un sabor
+    if (target.classList.contains('flavor-qty-input-cart')) {
+        const itemId = target.dataset.itemId;
+        const flavorName = target.dataset.flavorName;
+        const newQuantity = parseInt(target.value, 10);
+
+        const item = cart.find(i => i.id === itemId);
+        if (item) {
+            if (newQuantity > 0) {
+                item.flavors[flavorName] = newQuantity;
+            } else {
+                delete item.flavors[flavorName];
+            }
+
+            item.totalQuantity = Object.values(item.flavors).reduce((sum, qty) => sum + qty, 0);
+
+            if (item.totalQuantity === 0) {
+                const itemIndex = cart.findIndex(i => i.id === itemId);
+                if (itemIndex > -1) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            saveCart();
+            updateCartPage();
+        }
+    }
+}
+
+// --- MODIFICADO: Agrega el listener al cargar la página ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadCart();
+    
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    if (cartItemsContainer) {
+        cartItemsContainer.addEventListener('click', handleCartPageUpdate);
+        cartItemsContainer.addEventListener('change', handleCartPageUpdate);
+    }
+});

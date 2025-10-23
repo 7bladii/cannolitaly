@@ -1,20 +1,18 @@
-// checkout.js - Final Version with Address Line 2
+// checkout.js - Updated with Delete and Edit Functionality
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Make sure cart.js is loaded and the global 'cart' variable exists
-    if (typeof cart === 'undefined') {
-        console.error("Cart data is not available. Make sure cart.js is loaded before checkout.js");
+    if (typeof cart === 'undefined' || typeof saveCart === 'undefined') {
+        console.error("Cart functions are not available. Make sure cart.js is loaded.");
         displayEmptyCheckout();
         return;
     }
 
-    // --- 1. GET DOM ELEMENTS ---
     const summaryContainer = document.getElementById('checkout-summary-container');
     const totalEl = document.getElementById('checkout-total');
     const placeOrderBtn = document.getElementById('place-order-btn');
     const checkoutForm = document.getElementById('checkout-form');
 
-    // --- 2. RENDER THE ORDER SUMMARY ---
+    // --- MODIFICADO: La función principal para renderizar el resumen ahora es interactiva ---
     function renderCheckoutSummary() {
         if (cart.length === 0) {
             displayEmptyCheckout();
@@ -28,17 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemTotal = item.totalQuantity * item.pricePer;
             subtotal += itemTotal;
 
+            // --- MODIFICADO: Genera inputs para cada sabor en lugar de texto ---
             const flavorsBreakdown = Object.entries(item.flavors)
-                .map(([flavor, qty]) => `<li style="font-size: 0.9em; color: #555;">${qty}x ${flavor}</li>`)
+                .map(([flavor, qty]) => `
+                    <li class="flavor-edit-item">
+                        <span>${qty}x ${flavor}</span>
+                        <input 
+                            type="number" 
+                            class="flavor-qty-input" 
+                            value="${qty}" 
+                            min="0"
+                            data-item-id="${item.id}"
+                            data-flavor-name="${flavor}"
+                        >
+                    </li>
+                `)
                 .join('');
 
+            // --- MODIFICADO: Agrega un botón para eliminar el item principal ---
             summaryHTML += `
-                <div class="summary-item" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-                    <div class="item-info">
-                        <p style="margin: 0; font-weight: 500;">${item.totalQuantity}x ${item.name} (${item.size})</p>
-                        <ul style="list-style-type: none; padding-left: 10px; margin-top: 5px; margin-bottom: 0;">${flavorsBreakdown}</ul>
+                <div class="summary-item">
+                    <div class="summary-item-header">
+                        <p>${item.totalQuantity}x ${item.name} (${item.size})</p>
+                        <div class="summary-item-controls">
+                             <span class="item-total-price">$${itemTotal.toFixed(2)}</span>
+                             <button class="delete-item-btn" data-item-id="${item.id}">🗑️</button>
+                        </div>
                     </div>
-                    <p style="margin: 0; font-weight: 500;">$${itemTotal.toFixed(2)}</p>
+                    <ul class="flavor-edit-list">${flavorsBreakdown}</ul>
                 </div>
             `;
         });
@@ -49,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderBtn.disabled = false;
     }
 
-    // --- 3. HANDLE EMPTY CART SCENARIO ---
     function displayEmptyCheckout() {
         if (summaryContainer) summaryContainer.innerHTML = "<p>Your cart is empty.</p>";
         if (totalEl) totalEl.textContent = "$0.00";
@@ -59,11 +73,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. HANDLE FORM SUBMISSION ---
+    // --- NUEVO: Lógica para manejar las actualizaciones y eliminaciones ---
+    function handleCartUpdate(event) {
+        const target = event.target;
+
+        // Caso 1: Se hizo clic en un botón de eliminar
+        if (target.classList.contains('delete-item-btn')) {
+            const itemId = target.dataset.itemId;
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            
+            if (itemIndex > -1) {
+                cart.splice(itemIndex, 1); // Elimina el item del array del carrito
+                saveCart(); // Guarda el carrito actualizado en localStorage
+                renderCheckoutSummary(); // Vuelve a dibujar el resumen
+            }
+        }
+
+        // Caso 2: Se cambió la cantidad de un sabor
+        if (target.classList.contains('flavor-qty-input')) {
+            const itemId = target.dataset.itemId;
+            const flavorName = target.dataset.flavorName;
+            const newQuantity = parseInt(target.value, 10);
+
+            const item = cart.find(i => i.id === itemId);
+
+            if (item) {
+                if (newQuantity > 0) {
+                    item.flavors[flavorName] = newQuantity;
+                } else {
+                    // Si la cantidad es 0, elimina el sabor
+                    delete item.flavors[flavorName];
+                }
+
+                // Recalcular la cantidad total del item
+                item.totalQuantity = Object.values(item.flavors).reduce((sum, qty) => sum + qty, 0);
+
+                // Si un item se queda sin sabores, elimínalo del carrito
+                if (item.totalQuantity === 0) {
+                    const itemIndex = cart.findIndex(i => i.id === itemId);
+                    if (itemIndex > -1) {
+                        cart.splice(itemIndex, 1);
+                    }
+                }
+                
+                saveCart();
+                renderCheckoutSummary();
+            }
+        }
+    }
+
+    // Agrega un solo event listener al contenedor para manejar todos los clics y cambios
+    summaryContainer.addEventListener('click', handleCartUpdate);
+    summaryContainer.addEventListener('change', handleCartUpdate);
+
+
+    // --- Lógica del Formulario de Envío (Sin cambios) ---
     checkoutForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (cart.length === 0) {
-            alert("Your cart is empty. Please add items before placing an order.");
+            alert("Your cart is empty.");
             return;
         }
 
@@ -75,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             customerEmail: document.getElementById('customer-email').value,
             customerPhone: document.getElementById('customer-phone').value,
             customerAddress: document.getElementById('customer-address').value,
-            // --- CAMBIO: Guardamos la dirección 2 ---
             customerAddress2: document.getElementById('customer-address-2').value,
             items: cart,
             total: cart.reduce((sum, item) => sum + (item.totalQuantity * item.pricePer), 0),
@@ -86,11 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const db = firebase.firestore();
             await db.collection('orders').add(orderData);
-            
             localStorage.removeItem('cannolitalyCart');
-            
             window.location.href = 'confirmation.html';
-
         } catch (error) {
             console.error("Error placing order:", error);
             alert("There was an error placing your order. Please try again.");
@@ -99,6 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 5. INITIAL RENDER ---
+    // --- RENDER INICIAL ---
     renderCheckoutSummary();
 });

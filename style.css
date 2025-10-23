@@ -1137,4 +1137,173 @@ section {
     font-weight: 700;
     font-size: 1.3rem;
     color: var(--primary-color);
+} 
+
+/* --- Estilos para Checkout Interactivo --- */
+.summary-item {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.summary-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.summary-item-header p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.summary-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.item-total-price {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.delete-item-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 5px;
+    color: #888;
+}
+
+.delete-item-btn:hover {
+    color: #c0392b;
+}
+
+.flavor-edit-list {
+    list-style-type: none;
+    padding-left: 15px;
+    margin: 0;
+}
+
+.flavor-edit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.flavor-qty-input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+/* ============================================= */
+/* --- Estilos para Carrito Interactivo Profesional --- */
+/* ============================================= */
+
+/* Contenedor principal de cada producto en el carrito */
+.cart-item {
+    display: flex;
+    align-items: flex-start; /* Alinear verticalmente arriba */
+    gap: 15px; /* Espacio entre imagen, detalles y acciones */
+    padding: 20px 0;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.cart-item-image img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover; /* Asegura que la imagen no se deforme */
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+/* Sección central con el nombre y los sabores */
+.cart-item-details {
+    flex-grow: 1; /* Permite que esta sección ocupe el espacio disponible */
+}
+
+.cart-item-details h4 {
+    margin: 0 0 12px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+}
+
+/* Lista de sabores editables */
+.flavor-breakdown-editable {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espacio entre cada sabor */
+}
+
+/* Cada fila de sabor (nombre + input) */
+.cart-flavor-item {
+    display: flex;
+    justify-content: space-between; /* Alinea el nombre a la izq. y el input a la der. */
+    align-items: center;
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* Input para la cantidad de sabor */
+.flavor-qty-input-cart {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 6px;
+    font-size: 0.9em;
+    margin-left: 10px; /* Espacio entre el nombre y el campo */
+}
+
+/* Columna derecha con el botón de eliminar, cantidad y total */
+.cart-item-actions-total {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end; /* Alinea todo a la derecha */
+    min-height: 90px; /* Misma altura que la imagen para consistencia */
+}
+
+/* Botón para eliminar */
+.delete-item-btn-cart {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.4rem; /* Icono más grande y fácil de clickear */
+    padding: 0;
+    color: #aaa;
+    transition: color 0.2s ease; /* Transición suave de color */
+}
+
+.delete-item-btn-cart:hover {
+    color: #e74c3c; /* Color rojo al pasar el mouse */
+}
+
+/* Total del producto */
+.cart-item-total {
+    text-align: right;
+}
+
+.cart-item-total p {
+    margin: 0 0 4px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.cart-item-total strong {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #2c3e50;
 }

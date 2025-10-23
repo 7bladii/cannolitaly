@@ -1,7 +1,6 @@
-// product-detail.js - Updated for multiple flavor quantities
+// product-detail.js - Updated for MIXED SIZE orders with FLEXIBLE validation
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Ensure Firebase is initialized
     if (typeof firebase === 'undefined') {
         console.error("Firebase is not initialized.");
         document.body.innerHTML = "<h1>Error: Firebase connection failed.</h1>";
@@ -10,15 +9,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const db = firebase.firestore();
 
-    // --- 1. GET DOM ELEMENTS ---
     const productNameEl = document.getElementById('product-name');
     const productDescriptionEl = document.getElementById('product-description');
     const productImageEl = document.getElementById('product-image');
     const form = document.getElementById('product-options-form');
 
-    if (!form) return; // Stop if the form doesn't exist on the page
+    if (!form) return;
 
-    // New dynamic elements
     const sizeOptions = document.querySelectorAll('input[name="size"]');
     const flavorInputs = document.querySelectorAll('.flavor-qty-input');
     const totalQuantityDisplay = document.getElementById('total-quantity-display');
@@ -26,9 +23,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const validationMessage = document.getElementById('validation-message');
     const addToCartBtn = document.getElementById('add-to-cart-btn');
 
-    let productData; // Variable to store the loaded product data
+    let productData;
 
-    // --- 2. FETCH PRODUCT DATA FROM FIRESTORE ---
+    let flavorQuantities = {
+        large: {},
+        small: {}
+    };
+    
+    flavorInputs.forEach(input => {
+        const flavorName = input.dataset.flavor;
+        flavorQuantities.large[flavorName] = 0;
+        flavorQuantities.small[flavorName] = 0;
+    });
+
     try {
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
@@ -39,7 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         productData = { id: doc.id, ...doc.data() };
         
-        // Populate static product info
         productNameEl.textContent = productData.name;
         productDescriptionEl.textContent = productData.description;
         productImageEl.src = productData.imageUrl;
@@ -53,92 +59,115 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // --- 3. CORE LOGIC & UI UPDATES ---
-    function updateTotals() {
-        // Get selected size and price per cannoli from Firestore data
-        const selectedSizeInput = document.querySelector('input[name="size"]:checked');
-        const sizeValue = selectedSizeInput.value.toLowerCase(); // 'large' or 'small'
-        const pricePerCannoli = productData.prices[sizeValue];
-        const minQuantity = productData.minimums[sizeValue];
-        
-        // Calculate total quantity from all flavor inputs
-        let totalQuantity = 0;
+    // --- LÓGICA CENTRAL ---
+
+    function updateTotalsAndValidate() {
+        const selectedSize = document.querySelector('input[name="size"]:checked').value.toLowerCase();
         flavorInputs.forEach(input => {
-            totalQuantity += parseInt(input.value) || 0;
+            const flavorName = input.dataset.flavor;
+            flavorQuantities[selectedSize][flavorName] = parseInt(input.value) || 0;
         });
 
-        // Update displays
-        totalQuantityDisplay.textContent = totalQuantity;
-        const totalPrice = totalQuantity * pricePerCannoli;
-        totalPriceDisplay.textContent = `$${totalPrice.toFixed(2)}`;
-        
-        // Validation Logic
+        const totalLarge = Object.values(flavorQuantities.large).reduce((sum, qty) => sum + qty, 0);
+        const totalSmall = Object.values(flavorQuantities.small).reduce((sum, qty) => sum + qty, 0);
+
+        const grandTotalQuantity = totalLarge + totalSmall;
+        const grandTotalPrice = (totalLarge * productData.prices.large) + (totalSmall * productData.prices.small);
+        totalQuantityDisplay.textContent = grandTotalQuantity;
+        totalPriceDisplay.textContent = `$${grandTotalPrice.toFixed(2)}`;
+
+        // --- Lógica de Validación FINAL Y FLEXIBLE ---
+        const minLarge = productData.minimums.large;
+        const minSmall = productData.minimums.small;
         let isValid = true;
         let message = "";
 
-        if (totalQuantity === 0) {
-            message = 'Please add at least one cannoli.';
+        const anyMinimumMet = (totalLarge >= minLarge || totalSmall >= minSmall);
+
+        if (grandTotalQuantity === 0) {
+            message = 'Please add cannolis to your order.';
             isValid = false;
-        } else if (totalQuantity < minQuantity) {
-            message = `Minimum order for ${sizeValue} size is ${minQuantity} cannolis.`;
-            isValid = false;
+        } else if (anyMinimumMet) {
+            // ¡ÉXITO! Si un mínimo ya se cumplió, la orden es siempre válida.
+            // La validación estricta se desactiva.
+            message = "";
+            isValid = true;
+        } else {
+            // Si NINGÚN mínimo se ha cumplido, revisamos si hay cantidades inválidas.
+            if ((totalLarge > 0 && totalLarge < minLarge) || (totalSmall > 0 && totalSmall < minSmall)) {
+                message = `You must order the minimum first (${minLarge} large or ${minSmall} small).`;
+                isValid = false;
+            }
         }
 
         validationMessage.textContent = message;
         addToCartBtn.disabled = !isValid;
     }
 
-    // --- 4. EVENT LISTENERS ---
-    sizeOptions.forEach(radio => radio.addEventListener('change', updateTotals));
-    flavorInputs.forEach(input => input.addEventListener('input', updateTotals));
+    function switchSizeView() {
+        const selectedSize = document.querySelector('input[name="size"]:checked').value.toLowerCase();
+        flavorInputs.forEach(input => {
+            const flavorName = input.dataset.flavor;
+            input.value = flavorQuantities[selectedSize][flavorName] || 0;
+        });
+        updateTotalsAndValidate();
+    }
+    
+    function resetForm() {
+        flavorInputs.forEach(input => {
+            const flavorName = input.dataset.flavor;
+            flavorQuantities.large[flavorName] = 0;
+            flavorQuantities.small[flavorName] = 0;
+            input.value = 0;
+        });
+        document.getElementById('size-large').checked = true;
+        updateTotalsAndValidate();
+    }
 
-    // --- 5. ADD TO CART LOGIC ---
+    // --- EVENT LISTENERS ---
+    sizeOptions.forEach(radio => radio.addEventListener('change', switchSizeView));
+    flavorInputs.forEach(input => input.addEventListener('input', updateTotalsAndValidate));
+
+    // --- ADD TO CART ---
     addToCartBtn.addEventListener('click', () => {
-        const totalQuantity = parseInt(totalQuantityDisplay.textContent);
-        if (addToCartBtn.disabled || totalQuantity <= 0) {
-            return; // Don't add to cart if validation fails
+        if (addToCartBtn.disabled) return;
+        
+        const totalLarge = Object.values(flavorQuantities.large).reduce((sum, qty) => sum + qty, 0);
+        const totalSmall = Object.values(flavorQuantities.small).reduce((sum, qty) => sum + qty, 0);
+
+        if (totalLarge > 0) {
+            const largeCartItem = {
+                id: productData.id + '-large',
+                name: productData.name,
+                size: 'Large',
+                pricePer: productData.prices.large,
+                totalQuantity: totalLarge,
+                flavors: flavorQuantities.large,
+                imageUrl: productData.imageUrl
+            };
+            addToCart(largeCartItem);
         }
 
-        const selectedSizeInput = document.querySelector('input[name="size"]:checked');
-        const sizeValue = selectedSizeInput.value;
-        const pricePerItem = productData.prices[sizeValue.toLowerCase()];
+        if (totalSmall > 0) {
+            const smallCartItem = {
+                id: productData.id + '-small',
+                name: productData.name,
+                size: 'Small',
+                pricePer: productData.prices.small,
+                totalQuantity: totalSmall,
+                flavors: flavorQuantities.small,
+                imageUrl: productData.imageUrl
+            };
+            addToCart(smallCartItem);
+        }
 
-        // Build the detailed flavors object for the cart
-        const selectedFlavors = {};
-        flavorInputs.forEach(input => {
-            const quantity = parseInt(input.value) || 0;
-            if (quantity > 0) {
-                selectedFlavors[input.dataset.flavor] = quantity;
-            }
-        });
-        
-        // Create the new, detailed cart item object
-        const cartItem = {
-            id: productData.id,
-            name: productData.name,
-            size: sizeValue,
-            pricePer: pricePerItem,
-            totalQuantity: totalQuantity,
-            flavors: selectedFlavors, // e.g., { Pistachio: 6, Chocolate: 6 }
-            imageUrl: productData.imageUrl
-        };
-
-        // Call the global addToCart function from cart.js
-        addToCart(cartItem);
-
-        // Visual feedback for the user
         const originalBtnText = addToCartBtn.textContent;
         addToCartBtn.textContent = 'Added!';
         setTimeout(() => { addToCartBtn.textContent = originalBtnText; }, 2000);
         
-        // Reset form after adding
-        form.reset();
-        // Manually trigger radio button style and recalculate totals
-        document.getElementById('size-large').checked = true; 
-        updateTotals();
+        resetForm();
     });
     
-    // --- 6. INITIAL UI STATE ---
-    // Initial call to set the correct prices and validation messages on page load
-    updateTotals();
+    // --- INITIAL UI STATE ---
+    updateTotalsAndValidate();
 });
