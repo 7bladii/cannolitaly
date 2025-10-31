@@ -54,20 +54,32 @@
         </main>
     </div>
 
-    <div id="order-details-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-overlay" id="order-details-modal">
         <div class="modal-content">
-            <button class="modal-close-btn">&times;</button>
-            <h2>Order Details</h2>
+            <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+            
+            <h3>Detalles del Pedido</h3>
+            <p><strong>ID:</strong> <span id="modal-order-id"></span></p>
+            
             <div id="modal-body">
-                </div>
+                <p><strong>Cliente:</strong> <span id="modal-customer"></span></p>
+                <p><strong>Teléfono:</strong> <span id="modal-phone"></span></p>
+                <p><strong>Dirección:</strong> <span id="modal-address"></span></p>
+                <p><strong>Total:</strong> <span id="modal-total"></span></p>
+                
+                <hr>
+                <h4>Artículos del Pedido:</h4>
+                <div id="modal-items-list">
+                    </div>
+            </div>
         </div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="firebase-init.js"></script>
+    
     <script src="orders-admin.js"></script> 
     <script src="dashboard-ui.js"></script> 
 </body>

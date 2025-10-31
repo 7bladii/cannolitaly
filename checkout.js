@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="summary-item-header">
                         <p>${item.totalQuantity}x ${item.name} (${item.size})</p>
                         <div class="summary-item-controls">
-                             <span class="item-total-price">$${itemTotal.toFixed(2)}</span>
-                             <button class="delete-item-btn" data-item-id="${item.id}">🗑️</button>
+                            <span class="item-total-price">$${itemTotal.toFixed(2)}</span>
+                            <button class="delete-item-btn" data-item-id="${item.id}">🗑️</button>
                         </div>
                     </div>
                     <ul class="flavor-edit-list">${flavorsBreakdown}</ul>
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     summaryContainer.addEventListener('change', handleCartUpdate);
 
 
-    // --- Lógica del Formulario de Envío (Sin cambios) ---
+    // --- Lógica del Formulario de Envío (¡CON LA SOLUCIÓN APLICADA!) ---
     checkoutForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (cart.length === 0) {
@@ -138,13 +138,32 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderBtn.textContent = 'Placing Order...';
         placeOrderBtn.disabled = true;
 
+        // --- INICIO DE LA SOLUCIÓN ---
+        // "Limpiamos" el carrito para asegurarnos de que no hay valores 'undefined'
+        // que Firebase pueda rechazar silenciosamente.
+        const sanitizedItems = cart.map(item => {
+            return {
+                id: item.id || '',
+                name: item.name || 'Producto sin nombre',
+                size: item.size || 'N/A',
+                flavors: item.flavors || {},
+                totalQuantity: item.totalQuantity || 0,
+                pricePer: item.pricePer || 0,
+                imageUrl: item.imageUrl || '' // Aseguramos que imageUrl no sea undefined
+            };
+        });
+        // --- FIN DE LA SOLUCIÓN ---
+
         const orderData = {
             customerName: document.getElementById('customer-name').value,
             customerEmail: document.getElementById('customer-email').value,
             customerPhone: document.getElementById('customer-phone').value,
             customerAddress: document.getElementById('customer-address').value,
             customerAddress2: document.getElementById('customer-address-2').value,
-            items: cart,
+            
+            // ¡Usamos el array "limpio" en lugar del original!
+            items: sanitizedItems, 
+            
             total: cart.reduce((sum, item) => sum + (item.totalQuantity * item.pricePer), 0),
             status: 'Pending',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()

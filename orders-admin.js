@@ -1,3 +1,5 @@
+// orders-admin.js (Completo y Corregido)
+
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof firebase === 'undefined' || typeof firebase.firestore === 'undefined') {
         console.error("Firebase or Firestore is not loaded.");
@@ -31,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const orderDate = order.createdAt.toDate().toLocaleDateString();
                 const row = document.createElement('tr');
                 
-                // --- MEJORA: Combinar ambas direcciones para la tabla ---
                 const fullAddress = order.customerAddress2 
                     ? `${order.customerAddress}, ${order.customerAddress2}` 
                     : order.customerAddress;
@@ -107,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             itemsHTML += '</div>';
 
-            // --- MEJORA: Mostrar la dirección 2 en una línea separada en el modal ---
             modalBody.innerHTML = `
                 <p><strong>Order ID:</strong> ${doc.id}</p>
                 <p><strong>Customer:</strong> ${order.customerName}</p>
@@ -119,7 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
                 ${itemsHTML}`;
             
-            modal.classList.add('visible');
+            // --- CORRECCIÓN #1 ---
+            // Cambiado de classList.add('visible') a .style.display
+            // --- A ESTO: ---
+             modal.classList.add('visible'); 
         } catch (error) {
             console.error("Error fetching order details:", error);
         }
@@ -127,6 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. MODAL CLOSE LOGIC ---
     function closeModal() {
+        // --- CORRECCIÓN #2 ---
+        // Cambiado de classList.remove('visible') a .style.display
+        // --- A ESTO: ---
         modal.classList.remove('visible');
     }
     closeModalBtn.addEventListener('click', closeModal);
