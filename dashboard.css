@@ -197,3 +197,122 @@ td[data-label="Actions"] .btn { margin-left: 5px; }
     /* --- Modal Form Layout --- */
     .form-row { grid-template-columns: 1fr; }
 }
+
+/* =================================================================== */
+/* ESTILOS PROFESIONALES PARA EL MODAL DE DETALLES */
+/* =================================================================== */
+
+/* Ajusta el título del modal */
+.modal-content h3,
+.modal-content h2 {
+    font-family: var(--font-headings);
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+
+/* Estilos para el cuerpo del modal */
+#modal-body {
+    font-family: var(--font-body);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Separador de secciones */
+.modal-section {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+.modal-section:last-of-type {
+    margin-bottom: 0.5rem;
+}
+
+/* Espaciado de los párrafos de información */
+#modal-body p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+}
+#modal-body p strong {
+    color: var(--primary-color);
+    margin-right: 1rem;
+}
+#modal-body p span {
+    text-align: right;
+    color: #333;
+}
+
+
+/* Estilos para la lista de artículos */
+#modal-body h4 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+#modal-items-list .item {
+    background-color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+#modal-items-list .item:last-child {
+    margin-bottom: 0;
+}
+
+#modal-items-list .item strong {
+    font-size: 1rem;
+    color: #333;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#modal-items-list .item ul {
+    list-style-type: none;
+    padding-left: 1rem;
+    margin: 0;
+}
+#modal-items-list .item li {
+    font-size: 0.9rem;
+    color: #555;
+    position: relative;
+    padding-left: 15px;
+}
+#modal-items-list .item li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+
+/* Resumen del total */
+.modal-total-summary {
+    background-color: #f9fafb;
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-total-summary strong {
+    font-family: var(--font-headings);
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
+.modal-total-summary span {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+}

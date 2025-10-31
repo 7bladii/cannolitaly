@@ -1,4 +1,4 @@
-// orders-admin.js (Completo y Corregido)
+// orders-admin.js (Completo y Corregido con Fecha de Entrega)
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof firebase === 'undefined' || typeof firebase.firestore === 'undefined') {
@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ordersTbody.innerHTML = ''; 
 
             if (snapshot.empty) {
-                ordersTbody.innerHTML = '<tr><td colspan="8">No orders found.</td></tr>';
+                // --- CAMBIO (1/4): Colspan actualizado a 9 para la nueva columna ---
+                ordersTbody.innerHTML = '<tr><td colspan="9">No orders found.</td></tr>';
                 return;
             }
 
@@ -37,12 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? `${order.customerAddress}, ${order.customerAddress2}` 
                     : order.customerAddress;
 
+                // --- CAMBIO (2/4): Lógica añadida para formatear la fecha de entrega ---
+                let deliveryDateStr = 'N/A';
+                if (order.deliveryDateTime) {
+                    deliveryDateStr = order.deliveryDateTime.toDate().toLocaleString();
+                }
+                // --- Fin del código añadido ---
+
                 row.innerHTML = `
                     <td data-label="Order ID">${order.id.substring(0, 8)}...</td>
                     <td data-label="Customer">${order.customerName}</td>
                     <td data-label="Phone">${order.customerPhone}</td>
                     <td data-label="Address">${fullAddress}</td>
-                    <td data-label="Date">${orderDate}</td>
+                    <td data-label="Date (Ordered)">${orderDate}</td>
+                    
+                    <td data-label="Delivery Date">${deliveryDateStr}</td>
+                    
                     <td data-label="Total">$${order.total.toFixed(2)}</td>
                     <td data-label="Status"><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
                     <td data-label="Actions">
@@ -61,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. ADD EVENT LISTENERS ---
+    // --- 2. ADD EVENT LISTENERS (Tu código - Sin cambios) ---
     function addEventListenersToButtons() {
         document.querySelectorAll('.details-btn').forEach(button => {
             button.addEventListener('click', (e) => showOrderDetails(e.target.dataset.id));
@@ -74,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // --- 3. UPDATE & DELETE FUNCTIONS ---
+    // --- 3. UPDATE & DELETE FUNCTIONS (Tu código - Sin cambios) ---
     async function updateOrderStatus(orderId, currentStatus) {
         const newStatus = currentStatus === 'Pending' ? 'Completed' : 'Pending';
         if (confirm(`Change order status to "${newStatus}"?`)) {
@@ -96,6 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!doc.exists) return;
             const order = doc.data();
 
+            // --- CAMBIO (4/4): Lógica añadida para la fecha de entrega en el modal ---
+            const deliveryDateStr = order.deliveryDateTime 
+                ? order.deliveryDateTime.toDate().toLocaleString() 
+                : 'N/A';
+            // --- Fin del código añadido ---
+
             let itemsHTML = '<h4>Items:</h4><div id="modal-items-list">';
             order.items.forEach(item => {
                 const flavorsBreakdown = Object.entries(item.flavors)
@@ -108,31 +125,37 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             itemsHTML += '</div>';
 
+            // --- CÓDIGO NUEVO Y ESTRUCTURADO ---
             modalBody.innerHTML = `
-                <p><strong>Order ID:</strong> ${doc.id}</p>
-                <p><strong>Customer:</strong> ${order.customerName}</p>
-                <p><strong>Email:</strong> ${order.customerEmail}</p>
-                <p><strong>Phone:</strong> ${order.customerPhone}</p>
-                <p><strong>Address:</strong> ${order.customerAddress}</p>
-                ${order.customerAddress2 ? `<p><strong>Apt/Suite:</strong> ${order.customerAddress2}</p>` : ''}
-                <p><strong>Date:</strong> ${order.createdAt.toDate().toLocaleString()}</p>
-                <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
-                ${itemsHTML}`;
+                <div class="modal-section">
+                    <p><strong>Order ID:</strong> <span>${doc.id}</span></p>
+                    <p><strong>Customer:</strong> <span>${order.customerName}</span></p>
+                    <p><strong>Email:</strong> <span>${order.customerEmail}</span></p>
+                    <p><strong>Phone:</strong> <span>${order.customerPhone}</span></p>
+                    <p><strong>Address:</strong> <span>${order.customerAddress}</span></p>
+                    ${order.customerAddress2 ? `<p><strong>Apt/Suite:</strong> <span>${order.customerAddress2}</span></p>` : ''}
+                    <p><strong>Date (Ordered):</strong> <span>${order.createdAt.toDate().toLocaleString()}</span></p>
+                    
+                    <p><strong>Delivery Date:</strong> <span>${deliveryDateStr}</span></p>
+                </div>
+                
+                <div class="modal-section">
+                    ${itemsHTML}
+                </div>
             
-            // --- CORRECCIÓN #1 ---
-            // Cambiado de classList.add('visible') a .style.display
-            // --- A ESTO: ---
-             modal.classList.add('visible'); 
+                <div class="modal-total-summary">
+                    <strong>Total:</strong>
+                    <span>$${order.total.toFixed(2)}</span>
+                </div>`;
+            
+            modal.classList.add('visible'); 
         } catch (error) {
             console.error("Error fetching order details:", error);
         }
     }
 
-    // --- 5. MODAL CLOSE LOGIC ---
+    // --- 5. MODAL CLOSE LOGIC (Tu código - Sin cambios) ---
     function closeModal() {
-        // --- CORRECCIÓN #2 ---
-        // Cambiado de classList.remove('visible') a .style.display
-        // --- A ESTO: ---
         modal.classList.remove('visible');
     }
     closeModalBtn.addEventListener('click', closeModal);

@@ -39,14 +39,16 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Customer</th>
-                                <th>Date</th>
-                                <th>Total</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Date (Ordered)</th>
+                                <th>Delivery Date</th> <th>Total</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="orders-tbody">
-                            <tr><td colspan="6" style="text-align: center; padding: 20px;">Loading orders...</td></tr>
+                            <tr><td colspan="9" style="text-align: center; padding: 20px;">Loading orders...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -59,19 +61,9 @@
             <button class="modal-close-btn" id="modal-close-btn">&times;</button>
             
             <h3>Detalles del Pedido</h3>
-            <p><strong>ID:</strong> <span id="modal-order-id"></span></p>
             
             <div id="modal-body">
-                <p><strong>Cliente:</strong> <span id="modal-customer"></span></p>
-                <p><strong>Teléfono:</strong> <span id="modal-phone"></span></p>
-                <p><strong>Dirección:</strong> <span id="modal-address"></span></p>
-                <p><strong>Total:</strong> <span id="modal-total"></span></p>
-                
-                <hr>
-                <h4>Artículos del Pedido:</h4>
-                <div id="modal-items-list">
-                    </div>
-            </div>
+                </div>
         </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>

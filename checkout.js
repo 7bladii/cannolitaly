@@ -1,4 +1,4 @@
-// checkout.js - Updated with Delete and Edit Functionality
+// checkout.js - Corregido para evitar error de 'NaN' en el total
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof cart === 'undefined' || typeof saveCart === 'undefined') {
@@ -7,12 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // --- Selectores del DOM ---
     const summaryContainer = document.getElementById('checkout-summary-container');
     const totalEl = document.getElementById('checkout-total');
     const placeOrderBtn = document.getElementById('place-order-btn');
     const checkoutForm = document.getElementById('checkout-form');
+    const deliveryInput = document.getElementById('delivery-date');
 
-    // --- MODIFICADO: La función principal para renderizar el resumen ahora es interactiva ---
+
+    // --- Tu función para renderizar el resumen ---
     function renderCheckoutSummary() {
         if (cart.length === 0) {
             displayEmptyCheckout();
@@ -23,10 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let subtotal = 0;
 
         cart.forEach(item => {
-            const itemTotal = item.totalQuantity * item.pricePer;
+            // --- ¡CORRECCIÓN (1/2)! ---
+            // Cálculo "seguro" para el subtotal
+            const quantity = item.totalQuantity || 0;
+            const price = item.pricePer || 0;
+            const itemTotal = quantity * price;
+            // --- Fin de la Corrección ---
+            
             subtotal += itemTotal;
 
-            // --- MODIFICADO: Genera inputs para cada sabor en lugar de texto ---
             const flavorsBreakdown = Object.entries(item.flavors)
                 .map(([flavor, qty]) => `
                     <li class="flavor-edit-item">
@@ -43,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `)
                 .join('');
 
-            // --- MODIFICADO: Agrega un botón para eliminar el item principal ---
             summaryHTML += `
                 <div class="summary-item">
                     <div class="summary-item-header">
@@ -73,61 +80,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NUEVO: Lógica para manejar las actualizaciones y eliminaciones ---
+    // --- Tu lógica para manejar actualizaciones y eliminaciones (sin cambios) ---
     function handleCartUpdate(event) {
         const target = event.target;
 
-        // Caso 1: Se hizo clic en un botón de eliminar
         if (target.classList.contains('delete-item-btn')) {
             const itemId = target.dataset.itemId;
             const itemIndex = cart.findIndex(item => item.id === itemId);
-            
             if (itemIndex > -1) {
-                cart.splice(itemIndex, 1); // Elimina el item del array del carrito
-                saveCart(); // Guarda el carrito actualizado en localStorage
-                renderCheckoutSummary(); // Vuelve a dibujar el resumen
+                cart.splice(itemIndex, 1);
+                saveCart(); 
+                renderCheckoutSummary();
             }
         }
-
-        // Caso 2: Se cambió la cantidad de un sabor
         if (target.classList.contains('flavor-qty-input')) {
             const itemId = target.dataset.itemId;
             const flavorName = target.dataset.flavorName;
             const newQuantity = parseInt(target.value, 10);
-
             const item = cart.find(i => i.id === itemId);
-
             if (item) {
                 if (newQuantity > 0) {
                     item.flavors[flavorName] = newQuantity;
                 } else {
-                    // Si la cantidad es 0, elimina el sabor
                     delete item.flavors[flavorName];
                 }
-
-                // Recalcular la cantidad total del item
                 item.totalQuantity = Object.values(item.flavors).reduce((sum, qty) => sum + qty, 0);
-
-                // Si un item se queda sin sabores, elimínalo del carrito
                 if (item.totalQuantity === 0) {
                     const itemIndex = cart.findIndex(i => i.id === itemId);
-                    if (itemIndex > -1) {
-                        cart.splice(itemIndex, 1);
-                    }
+                    if (itemIndex > -1) cart.splice(itemIndex, 1);
                 }
-                
                 saveCart();
                 renderCheckoutSummary();
             }
         }
     }
 
-    // Agrega un solo event listener al contenedor para manejar todos los clics y cambios
     summaryContainer.addEventListener('click', handleCartUpdate);
     summaryContainer.addEventListener('change', handleCartUpdate);
 
+    // --- LÓGICA DE FECHA (sin cambios) ---
+    function setMinDeliveryDate() {
+        if (!deliveryInput) return;
+        const today = new Date();
+        const minDate = new Date(today.setDate(today.getDate() + 2)); 
+        minDate.setHours(9, 0, 0, 0); 
+        const year = minDate.getFullYear();
+        const month = (minDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = minDate.getDate().toString().padStart(2, '0');
+        const hours = minDate.getHours().toString().padStart(2, '0');
+        const minutes = minDate.getMinutes().toString().padStart(2, '0');
+        const minDateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+        deliveryInput.min = minDateTimeString;
+        deliveryInput.value = minDateTimeString;
+    }
 
-    // --- Lógica del Formulario de Envío (¡CON LA SOLUCIÓN APLICADA!) ---
+    // --- Lógica del Formulario de Envío (Fusionada) ---
     checkoutForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (cart.length === 0) {
@@ -138,9 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderBtn.textContent = 'Placing Order...';
         placeOrderBtn.disabled = true;
 
-        // --- INICIO DE LA SOLUCIÓN ---
-        // "Limpiamos" el carrito para asegurarnos de que no hay valores 'undefined'
-        // que Firebase pueda rechazar silenciosamente.
         const sanitizedItems = cart.map(item => {
             return {
                 id: item.id || '',
@@ -149,10 +153,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 flavors: item.flavors || {},
                 totalQuantity: item.totalQuantity || 0,
                 pricePer: item.pricePer || 0,
-                imageUrl: item.imageUrl || '' // Aseguramos que imageUrl no sea undefined
+                imageUrl: item.imageUrl || ''
             };
         });
-        // --- FIN DE LA SOLUCIÓN ---
+        
+        const deliveryDateValue = deliveryInput.value;
+        if (!deliveryDateValue) {
+            alert('Por favor, selecciona una fecha y hora de entrega.');
+            placeOrderBtn.textContent = 'Place Order';
+            placeOrderBtn.disabled = false;
+            return;
+        }
+        const deliveryDateTime = firebase.firestore.Timestamp.fromDate(new Date(deliveryDateValue));
+
+        // --- ¡CORRECCIÓN (2/2)! ---
+        // Cálculo "seguro" del total para Firebase
+        const safeTotal = cart.reduce((sum, item) => {
+            const quantity = item.totalQuantity || 0; // Trata undefined como 0
+            const price = item.pricePer || 0;       // Trata undefined como 0
+            return sum + (quantity * price);
+        }, 0); // Inicia en 0
+        // --- Fin de la Corrección ---
 
         const orderData = {
             customerName: document.getElementById('customer-name').value,
@@ -160,13 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
             customerPhone: document.getElementById('customer-phone').value,
             customerAddress: document.getElementById('customer-address').value,
             customerAddress2: document.getElementById('customer-address-2').value,
-            
-            // ¡Usamos el array "limpio" en lugar del original!
             items: sanitizedItems, 
             
-            total: cart.reduce((sum, item) => sum + (item.totalQuantity * item.pricePer), 0),
+            total: safeTotal, // <-- Usamos el total seguro en lugar del cálculo anterior
+            
             status: 'Pending',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            deliveryDateTime: deliveryDateTime
         };
 
         try {
@@ -184,4 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- RENDER INICIAL ---
     renderCheckoutSummary();
+    setMinDeliveryDate(); 
 });
