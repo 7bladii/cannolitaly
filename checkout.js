@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             customerAddress2: document.getElementById('customer-address-2').value,
             items: sanitizedItems, 
             
-            total: safeTotal, // <-- Usamos el total seguro en lugar del cálculo anterior
+            total: safeTotal, // <-- Usamos el total seguro
             
             status: 'Pending',
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
