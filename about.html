@@ -8,7 +8,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-</head>
+    
+    <style>
+        /* Seleccionamos la sección de la historia (la que no es 'page-header') */
+        main > section:not(.page-header) {
+            background-color: #000; /* Fondo negro */
+            color: #FFF; /* Texto blanco para legibilidad */
+            padding: 2rem 0; /* Espacio extra para que se vea bien */
+        }
+        
+        /* Aseguramos que el título h2 también sea blanco */
+        main > section:not(.page-header) h2 {
+            color: #FFF;
+        }
+    </style>
+    </head>
 <body>
 
     <header class="main-header">
@@ -53,12 +67,18 @@
 
         <section>
             <div class="container">
-                <h2>From Messina to Los Angeles</h2>
+                <h2>From Sicily to Los Angeles</h2>
                 <p>Our story doesn't begin in Los Angeles, It begins 60 years ago in Sicily, Messina (Taormina), with a recipe that was just the perfect one.</p>
                 <p>Our uncle's recipe was filled with love and experience, it was in the way he refined the local sheep's milk ricotta, or toasted the pistachios from Bronte before turning them into a delicious paste, or the way he would make a cream out of the chocolate from Modica.</p>
-                <p>Today, in our Los Angeles kitchen, we are the keepers of that recipe, we still use the finest ingredients, ( all imported from italy) honoring the classic methods that have defined our family for decades. We still fill every shell to order, by hand, just as our Uncle did.</p>
+                
+
+                <p>Today, in our Los Angeles kitchen, we are the keepers of that recipe, we still use the finest ingredients, ( all imported from italy) honoring the classic methods that have defined our family for decades.</p>
+                <p>We still fill every shell to order, by hand, just as our Uncle did.</p>
+                
+
                 <p>Cannolitaly was created with a clear goal in mind, to bring the true, authentic Sicilian cannolo to Los Angeles.</p>
                 <p>From the heart of Sicily to the heart of Los Angeles, just for you.</p>
+               
                 <p>Grazie.</p>
                 </div>
         </section>

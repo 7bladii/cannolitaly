@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const productData = {
                 name: document.getElementById('product-name').value,
-                description: document.getElementById('product-description').value,
+                // LÍNEA ELIMINADA: Ya no intentamos guardar la descripción
                 prices: {
                     large: parseFloat(document.getElementById('price-large').value),
                     small: parseFloat(document.getElementById('price-small').value)
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalTitle.textContent = 'Edit Product';
             productIdInput.value = id;
             document.getElementById('product-name').value = product.name;
-            document.getElementById('product-description').value = product.description;
+            // LÍNEA ELIMINADA: Esta era la línea que causaba el error
             document.getElementById('price-large').value = product.prices.large;
             document.getElementById('price-small').value = product.prices.small;
             document.getElementById('min-large').value = product.minimums.large;
