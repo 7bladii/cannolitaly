@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <header class="main-header">
@@ -51,10 +53,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="delivery-date">Fecha y Hora de Entrega</label>
-                            <input type="datetime-local" id="delivery-date" name="delivery-date" required>
-                            <small>Los pedidos se entregan 2 días después de la orden (a partir de las 9:00 AM).</small>
+                            <label for="delivery-date">Fecha de Entrega</label>
+                            <input type="text" id="delivery-date" name="delivery-date" placeholder="Selecciona una fecha..." required>
+                            <small>Los pedidos se entregan 2 días después de la orden.</small>
                         </div>
+                        
                         <button type="submit" id="place-order-btn" class="btn" style="width: 100%;">Place Order</button>
                     </form>
                 </div>
@@ -85,6 +88,8 @@
     <script src="firebase-init.js"></script>
     <script src="cart.js"></script>
     
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script src="checkout.js?v=2"></script>
     
 </body>

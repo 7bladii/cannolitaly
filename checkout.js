@@ -1,4 +1,4 @@
-// checkout.js - Corregido para evitar error de 'NaN' en el total
+// checkout.js - Actualizado con Flatpickr y correcciones de sintaxis
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof cart === 'undefined' || typeof saveCart === 'undefined') {
@@ -13,6 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const placeOrderBtn = document.getElementById('place-order-btn');
     const checkoutForm = document.getElementById('checkout-form');
     const deliveryInput = document.getElementById('delivery-date');
+
+    // --- NUEVO: Inicializar el calendario profesional Flatpickr ---
+    if (deliveryInput) {
+        flatpickr(deliveryInput, { // Usamos la variable que ya definiste
+            "enableTime": false,     // 1. Elimina el selector de hora
+            "dateFormat": "m/d/Y",   // 2. Formato de fecha (ej: 11/05/2025)
+            
+            // 3. Establece la fecha mínima a 2 días desde hoy (basado en tu regla)
+            "minDate": new Date().fp_incr(2), 
+        });
+    }
+    // --- Fin de la inicialización de Flatpickr ---
 
 
     // --- Tu función para renderizar el resumen ---
@@ -118,21 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     summaryContainer.addEventListener('click', handleCartUpdate);
     summaryContainer.addEventListener('change', handleCartUpdate);
 
-    // --- LÓGICA DE FECHA (sin cambios) ---
-    function setMinDeliveryDate() {
-        if (!deliveryInput) return;
-        const today = new Date();
-        const minDate = new Date(today.setDate(today.getDate() + 2)); 
-        minDate.setHours(9, 0, 0, 0); 
-        const year = minDate.getFullYear();
-        const month = (minDate.getMonth() + 1).toString().padStart(2, '0');
-        const day = minDate.getDate().toString().padStart(2, '0');
-        const hours = minDate.getHours().toString().padStart(2, '0');
-        const minutes = minDate.getMinutes().toString().padStart(2, '0');
-        const minDateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
-        deliveryInput.min = minDateTimeString;
-        deliveryInput.value = minDateTimeString;
-    }
+
+    // --- LÓGICA DE FECHA (ELIMINADA) ---
+    // La función setMinDeliveryDate() se eliminó
+    // Flatpickr ahora maneja esto.
+
 
     // --- Lógica del Formulario de Envío (Fusionada) ---
     checkoutForm.addEventListener('submit', async (e) => {
@@ -159,11 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const deliveryDateValue = deliveryInput.value;
         if (!deliveryDateValue) {
-            alert('Por favor, selecciona una fecha y hora de entrega.');
+            alert('Por favor, selecciona una fecha de entrega.');
             placeOrderBtn.textContent = 'Place Order';
             placeOrderBtn.disabled = false;
             return;
         }
+        
+        // Esta línea sigue funcionando porque new Date() puede
+        // interpretar el formato "m/d/Y" que genera Flatpickr.
         const deliveryDateTime = firebase.firestore.Timestamp.fromDate(new Date(deliveryDateValue));
 
         // --- ¡CORRECCIÓN (2/2)! ---
@@ -205,5 +210,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- RENDER INICIAL ---
     renderCheckoutSummary();
-    setMinDeliveryDate(); 
+    // setMinDeliveryDate(); // <-- Esta línea se eliminó
 });
