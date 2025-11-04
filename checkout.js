@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (deliveryInput) {
         flatpickr(deliveryInput, { // Use the variable you already defined
             "allowInput": true,
+            "disableMobile": true,
             "enableTime": false,      // 1. Disable time picker
             "dateFormat": "m/d/Y",    // 2. Date format (e.g., 11/05/2025)
             
