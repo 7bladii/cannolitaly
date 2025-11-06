@@ -1,4 +1,4 @@
-// checkout.js - Updated with Flatpickr and syntax corrections
+// checkout.js - Updated with Flatpickr AND Email Confirmation logic
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof cart === 'undefined' || typeof saveCart === 'undefined') {
@@ -197,13 +197,39 @@ document.addEventListener('DOMContentLoaded', () => {
             deliveryDateTime: deliveryDateTime
         };
 
+        // --- ✅ MODIFIED TRY/CATCH BLOCK FOR EMAIL ---
         try {
             const db = firebase.firestore();
-            await db.collection('orders').add(orderData);
+            
+            // 1. Guarda la orden y obtén la referencia
+            const orderRef = await db.collection('orders').add(orderData);
+
+            // 2. Prepara el email para la extensión
+            const emailContent = {
+                to: [orderData.customerEmail],
+                message: {
+                    subject: `¡Confirmación de tu orden! (ID: ${orderRef.id})`,
+                    html: `
+                        <h1>¡Gracias por tu orden, ${orderData.customerName}!</h1>
+                        <p>Hemos recibido tu pedido y lo estamos procesando.</p>
+                        <p><strong>Número de Orden:</strong> ${orderRef.id}</p>
+                        <p><strong>Total:</strong> $${orderData.total.toFixed(2)}</p>
+                        <p>Te contactaremos pronto con más detalles sobre la entrega.</p>
+                        <br>
+                        <p>- El equipo de Cannolitaly</p>
+                    `
+                }
+            };
+
+            // 3. Guarda el email en la colección 'mail' para que la extensión lo envíe
+            await db.collection('mail').add(emailContent);
+            
+            // 4. Limpia el carrito y redirige (como antes)
             localStorage.removeItem('cannolitalyCart');
             window.location.href = 'confirmation.html';
+
         } catch (error) {
-            console.error("Error placing order:", error);
+            console.error("Error placing order or sending email:", error);
             alert("There was an error placing your order. Please try again.");
             placeOrderBtn.textContent = 'Place Order';
             placeOrderBtn.disabled = false;
