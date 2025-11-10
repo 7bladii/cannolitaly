@@ -204,22 +204,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Guarda la orden y obtén la referencia
             const orderRef = await db.collection('orders').add(orderData);
 
-            // 2. Prepara el email para la extensión
-            const emailContent = {
-                to: [orderData.customerEmail],
-                message: {
-                    subject: `¡Confirmación de tu orden! (ID: ${orderRef.id})`,
-                    html: `
-                        <h1>¡Gracias por tu orden, ${orderData.customerName}!</h1>
-                        <p>Hemos recibido tu pedido y lo estamos procesando.</p>
-                        <p><strong>Número de Orden:</strong> ${orderRef.id}</p>
-                        <p><strong>Total:</strong> $${orderData.total.toFixed(2)}</p>
-                        <p>Te contactaremos pronto con más detalles sobre la entrega.</p>
-                        <br>
-                        <p>- El equipo de Cannolitaly</p>
-                    `
-                }
-            };
+            /// 2. Prepare the email for the extension (HTML in English)
+          const emailContent = {
+              to: [orderData.customerEmail],
+              message: {
+                  subject: `Your order is confirmed! (ID: ${orderRef.id})`,
+                  html: `
+                      <h1>Thank you for your order, ${orderData.customerName}!</h1>
+                      <p>We have received your order and are processing it.</p>
+                      <p><strong>Order Number:</strong> ${orderRef.id}</p>
+                      <p><strong>Total:</strong> $${orderData.total.toFixed(2)}</p>
+                      <p>We will contact you soon with more details about your delivery.</p>
+                      <br>
+                      <p>- The Cannolitaly Team</p>
+                  `
+              }
+          };
 
             // 3. Guarda el email en la colección 'mail' para que la extensión lo envíe
             await db.collection('mail').add(emailContent);

@@ -1307,3 +1307,20 @@ section {
     font-weight: 500;
     color: #2c3e50;
 }
+
+/* --- Cambios para la página de detalle de producto --- */
+
+/* 1. Oculta la descripción pequeña (la que dice 'cannoli') */
+#product-description {
+  display: none;
+}
+
+/* 2. Centra el título principal 'Cannoli' */
+#product-name {
+  text-align: center;
+}
+
+/* Esto centrará cualquier título h3 dentro de la cuadrícula de productos */
+#product-grid h3 {
+  text-align: center;
+}
