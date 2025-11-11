@@ -204,27 +204,56 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Guarda la orden y obtén la referencia
             const orderRef = await db.collection('orders').add(orderData);
 
-            /// 2. Prepare the email for the extension (HTML in English)
-          const emailContent = {
-              to: [orderData.customerEmail],
-              message: {
-                  subject: `Your order is confirmed! (ID: ${orderRef.id})`,
-                  html: `
-                      <h1>Thank you for your order, ${orderData.customerName}!</h1>
-                      <p>We have received your order and are processing it.</p>
-                      <p><strong>Order Number:</strong> ${orderRef.id}</p>
-                      <p><strong>Total:</strong> $${orderData.total.toFixed(2)}</p>
-                      <p>We will contact you soon with more details about your delivery.</p>
-                      <br>
-                      <p>- The Cannolitaly Team</p>
-                  `
-              }
-          };
+            // 2. Prepara el email para el CLIENTE (HTML in English)
+            const emailContent = {
+                to: [orderData.customerEmail],
+                message: {
+                    subject: `Your order is confirmed! (ID: ${orderRef.id})`,
+                    html: `
+                        <h1>Thank you for your order, ${orderData.customerName}!</h1>
+                        <p>We have received your order and are processing it.</p>
+                        <p><strong>Order Number:</strong> ${orderRef.id}</p>
+                        <p><strong>Total:</strong> $${orderData.total.toFixed(2)}</p>
+                        <p>We will contact you soon with more details about your delivery.</p>
+                        <br>
+                        <p>- The Cannolitaly Team</p>
+                    `
+                }
+            };
 
-            // 3. Guarda el email en la colección 'mail' para que la extensión lo envíe
+            // 3. Guarda el email del CLIENTE en la colección 'mail'
             await db.collection('mail').add(emailContent);
             
-            // 4. Limpia el carrito y redirige (como antes)
+            // --- ⬇️ NUEVO BLOQUE PARA EL ADMIN ⬇️ ---
+            
+            // 4. Prepara el email para el ADMIN
+            const adminEmailContent = {
+                // ⚠️ CAMBIA ESTO por tu correo de administrador
+                to: ['cannolitali@gmail.com'], 
+                message: {
+                    subject: `¡Nuevo Pedido en Cannolitaly! - ID: ${orderRef.id}`,
+                    html: `
+                        <h1>¡Has recibido un nuevo pedido!</h1>
+                        <p><strong>ID de Pedido:</strong> ${orderRef.id}</p>
+                        <p><strong>Cliente:</strong> ${orderData.customerName}</p>
+                        <p><strong>Email:</strong> ${orderData.customerEmail}</p>
+                        <p><strong>Teléfono:</strong> ${orderData.customerPhone}</p>
+                        <p><strong>Dirección:</strong> ${orderData.customerAddress} ${orderData.customerAddress2 || ''}</p>
+                        <p><strong>Fecha de Entrega:</strong> ${deliveryDateValue}</p>
+                        <hr>
+                        <h2>Total: $${orderData.total.toFixed(2)}</h2>
+                        <br>
+                        <p>Ingresa al panel de admin para gestionarlo.</p>
+                    `
+                }
+            };
+
+            // 5. Guarda el email del ADMIN en la colección 'mail'
+            await db.collection('mail').add(adminEmailContent);
+
+            // --- ⬆️ FIN DEL BLOQUE PARA EL ADMIN ⬆️ ---
+            
+            // 6. Limpia el carrito y redirige (como antes)
             localStorage.removeItem('cannolitalyCart');
             window.location.href = 'confirmation.html';
 
