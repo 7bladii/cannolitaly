@@ -1324,3 +1324,25 @@ section {
 #product-grid h3 {
   text-align: center;
 }
+
+/* --- Estilos para la foto de Catering (Corregido) --- */
+
+.catering-photo-section {
+    padding: 30px 0; /* Añade espacio arriba y abajo de la foto */
+}
+
+.catering-image-display {
+    /* ⬇️ ESTO ES LO QUE CENTRA ⬇️ */
+    display: block;     /* Trata la imagen como un bloque */
+    margin-left: auto;  /* Margen automático a la izquierda */
+    margin-right: auto; /* Margen automático a la derecha */
+
+    /* ⬇️ ESTO LA HACE RESPONSIVA ⬇️ */
+    width: 100%;      /* Ocupa el 100% de su contenedor (hasta el límite) */
+    max-width: 900px; /* Límite para que no sea GIGANTE en ordenadores */
+    
+    /* --- Estilos extra --- */
+    height: auto;     /* Mantiene la proporción de la imagen */
+    border-radius: 8px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+}
