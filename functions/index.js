@@ -19,10 +19,6 @@ const SEND_FROM_EMAIL = 'orders@cannolitaly.com';
 
 /**
  * Función Helper para construir el HTML del correo
- * @param {Object} orderData - Los datos del pedido de Firestore
- * @param {string} orderId - El ID del documento
- * @param {string} projectId - ID del proyecto para el link al panel
- * @returns {string} El contenido HTML del correo
  */
 function buildOrderEmailHtml(orderData, orderId, projectId) {
     let itemsHTML = '';
@@ -123,7 +119,7 @@ exports.onNewOrderCreate = functions.firestore
         const adminMsg = {
             to: 'cannolitali@gmail.com', // Envía a tu correo de negocio
             from: SEND_FROM_EMAIL,
-            subject: `🚨 NOTIFICACIÓN ADMIN: Nuevo Pedido #${orderId} - ${orderData.customerName || 'Cliente'}`,
+            subject: `🚨 NOTIFICACIÓN ADMIN: Nuevo Pedido #${orderId}`,
             html: emailHtml,
         };
 
@@ -134,10 +130,10 @@ exports.onNewOrderCreate = functions.firestore
             console.log(`Email de notificación SendGrid enviado al administrador.`);
             return null;
         } catch (error) {
-            console.error(`Error al enviar el email con SendGrid para el pedido ${orderId}:`, error);
+            // ESTA LÍNEA REGISTRA EL ERROR DE SENDGRID EN LOS LOGS DE FIREBASE
+            console.error(`Error al enviar el email con SendGrid para el pedido ${orderId}:`, error); 
             if (error.response) {
-                // Esto es útil para debuggear si hay problemas con la clave API
-                console.error(error.response.body);
+                console.error("Detalles del Error de SendGrid:", error.response.body);
             }
             return null;
         }
