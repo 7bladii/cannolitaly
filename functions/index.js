@@ -1,29 +1,29 @@
 // index.js (Firebase Cloud Function)
 
-// 1. IMPORTAR LIBRERÍAS
+// 1. IMPORT LIBRARIES
 const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
 const sgMail = require('@sendgrid/mail');
 
-// Inicializa la app de admin
+// Initialize the admin app
 admin.initializeApp();
 
-// 2. CONFIGURACIÓN DE SENDGRID
-// NOTA: La clave API debe estar configurada en Firebase config con el nombre 'sendgrid.key'
+// 2. SENDGRID CONFIGURATION
+// NOTE: API Key is read from the 'sendgrid.key' config variable
 const SENDGRID_API_KEY = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
-// ⚠️ CAMBIA ESTA DIRECCIÓN por la que usaste para autenticar tu dominio en SendGrid
-const SEND_FROM_EMAIL = 'orders@cannolitaly.com'; 
+// ✅ Verified Sender Email (using the address verified in SendGrid's Single Sender Verification)
+const SEND_FROM_EMAIL = 'cannolitali@gmail.com'; 
 
 
 /**
- * Función Helper para construir el HTML del correo
+ * Helper Function to construct the HTML content of the order email
  */
 function buildOrderEmailHtml(orderData, orderId, projectId) {
     let itemsHTML = '';
     
-    // Genera el listado de productos y sabores
+    // Generate the list of products and flavors
     if (orderData.items && orderData.items.length > 0) {
         orderData.items.forEach(item => {
             const flavorsBreakdown = Object.entries(item.flavors || {})
@@ -39,48 +39,48 @@ function buildOrderEmailHtml(orderData, orderId, projectId) {
             `;
         });
     } else {
-        itemsHTML = '<p>No se encontraron detalles de productos en el pedido.</p>';
+        itemsHTML = '<p>No product details found for this order.</p>';
     }
 
-    // Formato de fechas y dirección
+    // Date and Address Formatting
     const orderDate = orderData.createdAt 
-        ? orderData.createdAt.toDate().toLocaleString('es-ES') 
+        ? orderData.createdAt.toDate().toLocaleString('en-US') 
         : 'N/A';
     const deliveryDateStr = orderData.deliveryDateTime 
-        ? orderData.deliveryDateTime.toDate().toLocaleString('es-ES') 
+        ? orderData.deliveryDateTime.toDate().toLocaleString('en-US') 
         : 'N/A';
         
     const fullAddress = orderData.customerAddress2 
         ? `${orderData.customerAddress}, Apt/Suite: ${orderData.customerAddress2}` 
         : orderData.customerAddress;
 
-    // Estructura completa del correo HTML
+    // Full HTML Email Structure
     return `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
-            <h2 style="color: #6a1b9a;">📦 Nuevo Pedido Cannolitaly</h2>
+            <h2 style="color: #6a1b9a;">📦 New Cannolitaly Order</h2>
             
-            <p>Se ha realizado un nuevo pedido en tu sitio web. A continuación, se detallan los datos:</p>
+            <p>A new order has been placed on your website. Here are the details:</p>
 
-            <h3 style="border-bottom: 2px solid #6a1b9a; padding-bottom: 5px;">Detalles del Cliente</h3>
-            <p><strong>ID del Pedido:</strong> ${orderId}</p>
-            <p><strong>Nombre:</strong> ${orderData.customerName || 'N/A'}</p>
-            <p><strong>Teléfono:</strong> ${orderData.customerPhone || 'N/A'}</p>
+            <h3 style="border-bottom: 2px solid #6a1b9a; padding-bottom: 5px;">Customer Details</h3>
+            <p><strong>Order ID:</strong> ${orderId}</p>
+            <p><strong>Customer Name:</strong> ${orderData.customerName || 'N/A'}</p>
+            <p><strong>Phone:</strong> ${orderData.customerPhone || 'N/A'}</p>
             <p><strong>Email:</strong> ${orderData.customerEmail || 'N/A'}</p>
-            <p><strong>Dirección de Entrega:</strong> ${fullAddress || 'N/A'}</p>
-            <p><strong>Fecha de Pedido:</strong> ${orderDate}</p>
-            <p><strong>Fecha/Hora de Entrega Solicitada:</strong> <strong>${deliveryDateStr}</strong></p>
+            <p><strong>Delivery Address:</strong> ${fullAddress || 'N/A'}</p>
+            <p><strong>Date Ordered:</strong> ${orderDate}</p>
+            <p><strong>Requested Delivery Date:</strong> <strong>${deliveryDateStr}</strong></p>
 
-            <h3 style="border-bottom: 2px solid #6a1b9a; padding-bottom: 5px;">Productos Ordenados</h3>
+            <h3 style="border-bottom: 2px solid #6a1b9a; padding-bottom: 5px;">Items Ordered</h3>
             ${itemsHTML}
 
             <hr style="border: 0; border-top: 1px dashed #ccc;">
             <p style="font-size: 1.2em; font-weight: bold; color: #6a1b9a;">
-                TOTAL DEL PEDIDO: $${orderData.total ? orderData.total.toFixed(2) : 'N/A'}
+                TOTAL: $${orderData.total ? orderData.total.toFixed(2) : 'N/A'}
             </p>
             <p style="text-align: center; margin-top: 20px;">
                 <a href="https://console.firebase.google.com/project/${projectId}/firestore/data/~2Forders~2F${orderId}" 
                     style="display: inline-block; padding: 10px 20px; background-color: #6a1b9a; color: white; text-decoration: none; border-radius: 5px;">
-                    Ver en el Panel de Administración
+                    View in Admin Panel
                 </a>
             </p>
         </div>
@@ -88,7 +88,7 @@ function buildOrderEmailHtml(orderData, orderId, projectId) {
 }
 
 
-// 3. FUNCIÓN PRINCIPAL: Se activa al crear un nuevo documento en la colección 'orders'
+// 3. MAIN FUNCTION: Triggers on new document creation in the 'orders' collection
 exports.onNewOrderCreate = functions.firestore
     .document('orders/{orderId}')
     .onCreate(async (snap, context) => {
@@ -103,37 +103,38 @@ exports.onNewOrderCreate = functions.firestore
         const projectId = context.projectId || 'cannoli-f1d4d';
         const emailHtml = buildOrderEmailHtml(orderData, orderId, projectId);
         
-        // --- 1. ENVIAR AL CLIENTE (Confirma el pedido) ---
+        // --- 1. SEND TO CUSTOMER (Confirmation Email) ---
         const clientMsg = {
-            to: orderData.customerEmail, // Envía al cliente
-            from: SEND_FROM_EMAIL, // Desde tu dominio autenticado (alta entregabilidad)
-            subject: `✅ Confirmación: Tu Pedido #${orderId} de Cannolitaly ha sido recibido`,
+            to: orderData.customerEmail, 
+            from: SEND_FROM_EMAIL, // ✅ USING THE VERIFIED SENDER
+            subject: `✅ Order Confirmation: Your Cannolitaly Order #${orderId} Has Been Received`,
             html: `
-                <h2>Gracias por tu pedido, ${orderData.customerName || 'Cliente'}!</h2>
-                <p>Hemos recibido tu orden y la estamos procesando. Nos pondremos en contacto pronto con más detalles sobre tu entrega.</p>
+                <h2>Thank you for your order, ${orderData.customerName || 'Customer'}!</h2>
+                <p>We have received your order and are processing it. We will contact you soon with more details about your delivery.</p>
                 ${emailHtml}
+                <p>— The Cannolitaly Team</p>
             `,
         };
 
-        // --- 2. ENVIAR AL ADMINISTRADOR (Notificación) ---
+        // --- 2. SEND TO ADMINISTRATOR (Admin Notification) ---
         const adminMsg = {
-            to: 'cannolitali@gmail.com', // Envía a tu correo de negocio
+            to: 'cannolitali@gmail.com', // Admin Email
             from: SEND_FROM_EMAIL,
-            subject: `🚨 NOTIFICACIÓN ADMIN: Nuevo Pedido #${orderId}`,
+            subject: `🚨 ADMIN NOTIFICATION: New Order #${orderId}`,
             html: emailHtml,
         };
 
         try {
             await sgMail.send(clientMsg);
-            console.log(`Email de confirmación SendGrid enviado con éxito al cliente.`);
+            console.log(`SendGrid confirmation email sent successfully to customer.`);
             await sgMail.send(adminMsg);
-            console.log(`Email de notificación SendGrid enviado al administrador.`);
+            console.log(`SendGrid notification email sent successfully to admin.`);
             return null;
         } catch (error) {
-            // ESTA LÍNEA REGISTRA EL ERROR DE SENDGRID EN LOS LOGS DE FIREBASE
-            console.error(`Error al enviar el email con SendGrid para el pedido ${orderId}:`, error); 
+            // Log the error details for debugging the sender identity issue
+            console.error(`Error sending email with SendGrid for order ${orderId}:`, error); 
             if (error.response) {
-                console.error("Detalles del Error de SendGrid:", error.response.body);
+                console.error("SendGrid Error Details:", error.response.body);
             }
             return null;
         }
