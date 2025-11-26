@@ -1,20 +1,20 @@
 // index.js (Firebase Cloud Function)
 
-// 1. IMPORT LIBRARIES
+// 1. IMPORTAR LIBRERÍAS
 const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
 const sgMail = require('@sendgrid/mail');
 
-// Initialize the admin app
+// Inicializa la app de admin
 admin.initializeApp();
 
-// 2. SENDGRID CONFIGURATION
-// NOTE: API Key is read from the 'sendgrid.key' config variable
+// 2. CONFIGURACIÓN DE SENDGRID
+// NOTA: La clave API se lee de la variable 'sendgrid.key'
 const SENDGRID_API_KEY = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
-// ✅ Verified Sender Email (using the address verified in SendGrid's Single Sender Verification)
-const SEND_FROM_EMAIL = 'cannolitali@gmail.com'; 
+// ✅ CORRECCIÓN FINAL: Usamos una dirección en el dominio autenticado (e.g., orders@cannolitaly.com)
+const SEND_FROM_EMAIL = 'orders@cannolitaly.com'; 
 
 
 /**
@@ -106,7 +106,7 @@ exports.onNewOrderCreate = functions.firestore
         // --- 1. SEND TO CUSTOMER (Confirmation Email) ---
         const clientMsg = {
             to: orderData.customerEmail, 
-            from: SEND_FROM_EMAIL, // ✅ USING THE VERIFIED SENDER
+            from: SEND_FROM_EMAIL, // ✅ USING THE VERIFIED DOMAIN ADDRESS
             subject: `✅ Order Confirmation: Your Cannolitaly Order #${orderId} Has Been Received`,
             html: `
                 <h2>Thank you for your order, ${orderData.customerName || 'Customer'}!</h2>
@@ -119,7 +119,7 @@ exports.onNewOrderCreate = functions.firestore
         // --- 2. SEND TO ADMINISTRATOR (Admin Notification) ---
         const adminMsg = {
             to: 'cannolitali@gmail.com', // Admin Email
-            from: SEND_FROM_EMAIL,
+            from: SEND_FROM_EMAIL, // ✅ USING THE VERIFIED DOMAIN ADDRESS
             subject: `🚨 ADMIN NOTIFICATION: New Order #${orderId}`,
             html: emailHtml,
         };
@@ -131,7 +131,6 @@ exports.onNewOrderCreate = functions.firestore
             console.log(`SendGrid notification email sent successfully to admin.`);
             return null;
         } catch (error) {
-            // Log the error details for debugging the sender identity issue
             console.error(`Error sending email with SendGrid for order ${orderId}:`, error); 
             if (error.response) {
                 console.error("SendGrid Error Details:", error.response.body);
