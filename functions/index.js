@@ -1,20 +1,20 @@
 // index.js (Firebase Cloud Function)
 
-// 1. IMPORTAR LIBRERÍAS
+// 1. IMPORT LIBRARIES
 const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
 const sgMail = require('@sendgrid/mail');
 
-// Inicializa la app de admin
+// Initialize the admin app
 admin.initializeApp();
 
-// 2. CONFIGURACIÓN DE SENDGRID
-// NOTA: La clave API se lee de la variable 'sendgrid.key'
+// 2. SENDGRID CONFIGURATION
+// NOTE: API Key is read from the 'sendgrid.key' config variable
 const SENDGRID_API_KEY = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
-// ✅ USAMOS LA DIRECCIÓN DE DOMINIO, QUE ES LA MÁS ROBUSTA
-const SEND_FROM_EMAIL = 'cannolitali@gmail.com';
+// ✅ VERIFIED SENDER: Usamos la dirección verificada por SendGrid como Single Sender Identity
+const SEND_FROM_EMAIL = 'cannolitali@gmail.com'; 
 
 
 /**
@@ -103,9 +103,9 @@ exports.onNewOrderCreate = functions.firestore
         const projectId = context.projectId || 'cannoli-f1d4d';
         const emailHtml = buildOrderEmailHtml(orderData, orderId, projectId);
         
-        // --- DEPURACIÓN CLAVE: Verificamos qué email estamos usando para el cliente ---
-        console.log('Sending confirmation email to customer:', orderData.customerEmail); // ⬅️ NUEVO LOG DE DEPURACIÓN
-        // -------------------------------------------------------------------------
+        // --- LOG DEPURACIÓN: Verifica el email del cliente ---
+        console.log('Attempting to send confirmation to:', orderData.customerEmail);
+        // ----------------------------------------------------
         
         // --- 1. SEND TO CUSTOMER (Confirmation Email) ---
         const clientMsg = {
