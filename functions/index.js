@@ -13,8 +13,8 @@ admin.initializeApp();
 const SENDGRID_API_KEY = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
-// ✅ CORRECCIÓN FINAL: Usamos una dirección en el dominio autenticado (e.g., orders@cannolitaly.com)
-const SEND_FROM_EMAIL = 'orders@cannolitaly.com'; 
+// ✅ USAMOS LA DIRECCIÓN DE DOMINIO, QUE ES LA MÁS ROBUSTA
+const SEND_FROM_EMAIL = 'cannolitali@gmail.com';
 
 
 /**
@@ -103,10 +103,14 @@ exports.onNewOrderCreate = functions.firestore
         const projectId = context.projectId || 'cannoli-f1d4d';
         const emailHtml = buildOrderEmailHtml(orderData, orderId, projectId);
         
+        // --- DEPURACIÓN CLAVE: Verificamos qué email estamos usando para el cliente ---
+        console.log('Sending confirmation email to customer:', orderData.customerEmail); // ⬅️ NUEVO LOG DE DEPURACIÓN
+        // -------------------------------------------------------------------------
+        
         // --- 1. SEND TO CUSTOMER (Confirmation Email) ---
         const clientMsg = {
             to: orderData.customerEmail, 
-            from: SEND_FROM_EMAIL, // ✅ USING THE VERIFIED DOMAIN ADDRESS
+            from: SEND_FROM_EMAIL, 
             subject: `✅ Order Confirmation: Your Cannolitaly Order #${orderId} Has Been Received`,
             html: `
                 <h2>Thank you for your order, ${orderData.customerName || 'Customer'}!</h2>
@@ -119,7 +123,7 @@ exports.onNewOrderCreate = functions.firestore
         // --- 2. SEND TO ADMINISTRATOR (Admin Notification) ---
         const adminMsg = {
             to: 'cannolitali@gmail.com', // Admin Email
-            from: SEND_FROM_EMAIL, // ✅ USING THE VERIFIED DOMAIN ADDRESS
+            from: SEND_FROM_EMAIL, 
             subject: `🚨 ADMIN NOTIFICATION: New Order #${orderId}`,
             html: emailHtml,
         };
@@ -131,6 +135,7 @@ exports.onNewOrderCreate = functions.firestore
             console.log(`SendGrid notification email sent successfully to admin.`);
             return null;
         } catch (error) {
+            // Esto es crucial para la depuración en caso de fallo
             console.error(`Error sending email with SendGrid for order ${orderId}:`, error); 
             if (error.response) {
                 console.error("SendGrid Error Details:", error.response.body);
