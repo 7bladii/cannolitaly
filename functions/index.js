@@ -9,23 +9,22 @@ const sgMail = require('@sendgrid/mail');
 admin.initializeApp();
 
 // 2. SENDGRID CONFIGURATION
-// NOTE: API Key is read from the 'sendgrid.key' config variable
 const SENDGRID_API_KEY = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
-// ✅ VERIFIED SENDER: Usamos la dirección verificada por SendGrid como Single Sender Identity
+// ✅ REMITENTE VERIFICADO: Usamos la dirección de Gmail verificada (la única funcional ahora)
 const SEND_FROM_EMAIL = 'cannolitali@gmail.com'; 
 
 
 /**
- * Helper Function to construct the HTML content of the order email
+ * Helper Function to construct the HTML list of products
  */
-function buildOrderEmailHtml(orderData, orderId, projectId) {
+function buildItemsListHtml(items) {
     let itemsHTML = '';
     
-    // Generate the list of products and flavors
-    if (orderData.items && orderData.items.length > 0) {
-        orderData.items.forEach(item => {
+    if (items && items.length > 0) {
+        items.forEach(item => {
+            // Aseguramos que los nombres de los sabores se muestren correctamente
             const flavorsBreakdown = Object.entries(item.flavors || {})
                 .map(([flavor, qty]) => `<li>${qty}x ${flavor}</li>`).join('');
                 
@@ -41,8 +40,54 @@ function buildOrderEmailHtml(orderData, orderId, projectId) {
     } else {
         itemsHTML = '<p>No product details found for this order.</p>';
     }
+    return itemsHTML;
+}
 
-    // Date and Address Formatting
+/**
+ * FUNCIÓN PARA EL CLIENTE: Genera el cuerpo del email amigable, en inglés y SÓLO con la FECHA.
+ */
+function buildClientEmailBody(orderData, orderId) {
+    
+    // MODIFICADO: Formatea la fecha de entrega para mostrar solo la FECHA (toLocaleDateString)
+    const deliveryDateStr = orderData.deliveryDateTime 
+        ? orderData.deliveryDateTime.toDate().toLocaleDateString('en-US') 
+        : 'N/A';
+        
+    const itemsListHtml = buildItemsListHtml(orderData.items);
+    
+    return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0;">
+            <h2 style="color: #6a1b9a;">Thank you for your order, ${orderData.customerName || 'Customer'}!</h2>
+            
+            <p>We have received your order and are processing it. Below is a summary of your purchase:</p>
+            
+            <h3 style="border-bottom: 2px solid #6a1b9a; padding-bottom: 5px; font-size: 1.1em;">Order Summary (#${orderId})</h3>
+            
+            <p><strong>Delivery Date:</strong> <strong>${deliveryDateStr}</strong></p>
+            
+            <h4 style="margin-top: 20px;">Items Ordered:</h4>
+            ${itemsListHtml}
+            
+            <hr style="border: 0; border-top: 1px solid #ccc;">
+            <p style="font-size: 1.2em; font-weight: bold; color: #6a1b9a;">
+                TOTAL: $${orderData.total ? orderData.total.toFixed(2) : 'N/A'}
+            </p>
+            
+            <p style="margin-top: 30px;">
+                You will receive another notification when your order is out for delivery.
+            </p>
+            <p>— The Cannolitaly Team</p>
+        </div>
+    `;
+}
+
+/**
+ * FUNCIÓN PARA EL ADMINISTRADOR: Genera el cuerpo del email DETALLADO (incluye la hora de entrega y el botón).
+ */
+function buildAdminEmailBody(orderData, orderId, projectId) {
+    const itemsListHtml = buildItemsListHtml(orderData.items);
+    
+    // Mantiene la fecha Y HORA aquí porque el ADMIN la necesita
     const orderDate = orderData.createdAt 
         ? orderData.createdAt.toDate().toLocaleString('en-US') 
         : 'N/A';
@@ -53,6 +98,16 @@ function buildOrderEmailHtml(orderData, orderId, projectId) {
     const fullAddress = orderData.customerAddress2 
         ? `${orderData.customerAddress}, Apt/Suite: ${orderData.customerAddress2}` 
         : orderData.customerAddress;
+
+    // Botón de Administrador 
+    const adminButtonHTML = `
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="https://console.firebase.google.com/project/${projectId}/firestore/data/~2Forders~2F${orderId}" 
+                style="display: inline-block; padding: 10px 20px; background-color: #6a1b9a; color: white; text-decoration: none; border-radius: 5px;">
+                    View in Admin Panel
+            </a>
+        </p>
+    `;
 
     // Full HTML Email Structure
     return `
@@ -71,18 +126,13 @@ function buildOrderEmailHtml(orderData, orderId, projectId) {
             <p><strong>Requested Delivery Date:</strong> <strong>${deliveryDateStr}</strong></p>
 
             <h3 style="border-bottom: 2px solid #6a1b9a; padding-bottom: 5px;">Items Ordered</h3>
-            ${itemsHTML}
+            ${itemsListHtml}
 
             <hr style="border: 0; border-top: 1px dashed #ccc;">
             <p style="font-size: 1.2em; font-weight: bold; color: #6a1b9a;">
                 TOTAL: $${orderData.total ? orderData.total.toFixed(2) : 'N/A'}
             </p>
-            <p style="text-align: center; margin-top: 20px;">
-                <a href="https://console.firebase.google.com/project/${projectId}/firestore/data/~2Forders~2F${orderId}" 
-                    style="display: inline-block; padding: 10px 20px; background-color: #6a1b9a; color: white; text-decoration: none; border-radius: 5px;">
-                    View in Admin Panel
-                </a>
-            </p>
+            ${adminButtonHTML}
         </div>
     `;
 }
@@ -101,23 +151,19 @@ exports.onNewOrderCreate = functions.firestore
         }
 
         const projectId = context.projectId || 'cannoli-f1d4d';
-        const emailHtml = buildOrderEmailHtml(orderData, orderId, projectId);
         
-        // --- LOG DEPURACIÓN: Verifica el email del cliente ---
-        console.log('Attempting to send confirmation to:', orderData.customerEmail);
-        // ----------------------------------------------------
+        // USAMOS LA FUNCIÓN SIMPLE PARA EL CLIENTE
+        const clientEmailHtml = buildClientEmailBody(orderData, orderId); 
         
+        // USAMOS LA FUNCIÓN DETALLADA PARA EL ADMINISTRADOR
+        const adminEmailHtml = buildAdminEmailBody(orderData, orderId, projectId);
+
         // --- 1. SEND TO CUSTOMER (Confirmation Email) ---
         const clientMsg = {
             to: orderData.customerEmail, 
             from: SEND_FROM_EMAIL, 
-            subject: `✅ Order Confirmation: Your Cannolitaly Order #${orderId} Has Been Received`,
-            html: `
-                <h2>Thank you for your order, ${orderData.customerName || 'Customer'}!</h2>
-                <p>We have received your order and are processing it. We will contact you soon with more details about your delivery.</p>
-                ${emailHtml}
-                <p>— The Cannolitaly Team</p>
-            `,
+            subject: `✅ Order Confirmation: Your Cannolitaly Order #${orderId} Has Been Received`, 
+            html: clientEmailHtml, // ¡ESTE ES EL HTML LIMPIO Y SÓLO CON LA FECHA!
         };
 
         // --- 2. SEND TO ADMINISTRATOR (Admin Notification) ---
@@ -125,7 +171,7 @@ exports.onNewOrderCreate = functions.firestore
             to: 'cannolitali@gmail.com', // Admin Email
             from: SEND_FROM_EMAIL, 
             subject: `🚨 ADMIN NOTIFICATION: New Order #${orderId}`,
-            html: emailHtml,
+            html: adminEmailHtml, // ¡ESTE ES EL HTML DETALLADO CON BOTÓN Y HORA!
         };
 
         try {
@@ -135,7 +181,6 @@ exports.onNewOrderCreate = functions.firestore
             console.log(`SendGrid notification email sent successfully to admin.`);
             return null;
         } catch (error) {
-            // Esto es crucial para la depuración en caso de fallo
             console.error(`Error sending email with SendGrid for order ${orderId}:`, error); 
             if (error.response) {
                 console.error("SendGrid Error Details:", error.response.body);

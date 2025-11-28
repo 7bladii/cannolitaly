@@ -11,11 +11,11 @@
         <form id="login-form">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" name="email" required> 
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <button type="submit" class="btn" style="width:100%;">Login</button>
             <p id="error-message" style="color:red; margin-top:10px;"></p>
@@ -31,24 +31,46 @@
     <script>
         const loginForm = document.getElementById('login-form');
         const errorMessage = document.getElementById('error-message');
-        
-        // La variable 'auth' ya está definida en firebase-init.js, por lo que no se vuelve a declarar aquí.
-        // Esto soluciona el segundo error.
+        const loginButton = loginForm.querySelector('button[type="submit"]'); // Selecciona el botón para el estado de carga
 
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Accede a los valores usando los atributos 'name' corregidos en el HTML
             const email = loginForm.email.value;
             const password = loginForm.password.value;
 
-            // Usamos la variable 'auth' que ya existe
+            // Transición a estado de carga
+            errorMessage.textContent = ''; // Limpia errores previos
+            loginButton.disabled = true;
+            loginButton.textContent = 'Logging in...';
+
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Si el login es exitoso, redirige al panel de control
+                    // Si el login es exitoso
                     window.location.href = 'dashboard.html';
                 })
                 .catch((error) => {
-                    // Usamos un mensaje de error más amigable
-                    errorMessage.textContent = "Email o contraseña incorrectos.";
+                    // Lógica de errores robusta para mensajes amigables
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                        case 'auth/invalid-credential':
+                            errorMessage.textContent = 'Incorrect email or password. Please try again.';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage.textContent = 'Please enter a valid email address.';
+                            break;
+                        default:
+                            errorMessage.textContent = 'An unexpected error occurred. Please try again later.';
+                            break;
+                    }
+                    console.error("Login Error Code:", error.code); // Para depuración
+                })
+                .finally(() => {
+                    // Re-habilitar el botón después de la promesa (éxito o fallo)
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Login';
                 });
         });
     </script>
