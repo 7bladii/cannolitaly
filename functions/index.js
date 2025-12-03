@@ -12,20 +12,28 @@ const SENDER_EMAIL = 'orders@cannolitaly.com';
 
 /**
  * HELPER: Construye la lista HTML de productos
- * Se usa para generar el resumen de lo que compraron.
+ * MEJORA: Cambia "Make your choice" por "Cannoli" automáticamente.
  */
 function buildItemsListHtml(items) {
   let itemsHTML = '';
 
   if (items && items.length > 0) {
     items.forEach(item => {
+      
+      // --- LÓGICA DE NOMBRE MEJORADA ---
+      // Si el nombre contiene "Make your choice", lo mostramos como "Cannoli"
+      let displayName = item.name;
+      if (displayName && displayName.includes('Make your choice')) {
+          displayName = 'Cannoli';
+      }
+
       // Desglose de sabores si existen
       const flavorsBreakdown = Object.entries(item.flavors || {})
         .map(([flavor, qty]) => `<li>${qty}x ${flavor}</li>`).join('');
 
       itemsHTML += `
         <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-          <p style="margin: 0;"><strong>${item.totalQuantity}x ${item.name} (${item.size})</strong></p>
+          <p style="margin: 0;"><strong>${item.totalQuantity}x ${displayName} (${item.size})</strong></p>
           <ul style="list-style-type: none; padding-left: 15px; font-size: 0.9em; color: #555;">
             ${flavorsBreakdown}
           </ul>
@@ -156,7 +164,7 @@ exports.onNewOrderCreate = functions
       await mailRef.add({
         to: orderData.customerEmail,
         message: {
-          from: `Cannolitaly <${SENDER_EMAIL}>`, // Se ve profesional: "Cannolitaly <orders@...>"
+          from: `Cannolitaly <${SENDER_EMAIL}>`, 
           subject: `✅ Order Received: Cannolitaly #${orderId}`,
           html: clientHtml,
         }
