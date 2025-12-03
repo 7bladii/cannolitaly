@@ -5,5 +5,8 @@
       "runtime": "nodejs20",
       "generation": "gen1"
     }
-  ]
+  ],
+  "extensions": {
+    "firestore-send-email": "firebase/firestore-send-email@0.2.4"
+  }
 }

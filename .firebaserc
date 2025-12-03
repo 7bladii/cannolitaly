@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "cannoli-f1d4d"
+  },
+  "targets": {},
+  "etags": {
+    "cannoli-f1d4d": {
+      "extensionInstances": {
+        "firestore-send-email": "b3261c64e4cc94b9d093c845aaa5a2ccf729c98877cd7eefe9aa99d98ff7aac4"
+      }
+    }
   }
 }
