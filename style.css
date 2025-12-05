@@ -853,6 +853,10 @@ section {
 .footer-logo {
     max-width: 150px;
     margin-bottom: 15px;
+
+    display: block;      
+    margin-left: auto;   
+    margin-right: auto;
 }
 
 .footer-about p {
