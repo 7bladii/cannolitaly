@@ -4,18 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart - Cannolitaly</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
     <link rel="icon" href="images/favicon.png" type="image/png">
+    
+    <style>
+        .tip-section {
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #eee;
+        }
+        .tip-options {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+        .tip-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .tip-btn:hover {
+            border-color: #888;
+        }
+        /* Clase para el botón seleccionado */
+        .tip-btn.active {
+            background-color: #333 !important;
+            color: #fff !important;
+            border-color: #333 !important;
+        }
+    </style>
 </head>
 <body>
 
     <header class="main-header">
         <div class="container">
-              <div class="header-left-cluster">
-                <a href="index.html" class="logo"><img src="images/logo.png" alt="Cannolitaly Logo"></a>
+            <div class="header-left-cluster">
+                <a href="index.html" class="logo">
+                    <img src="images/logo.png" alt="Cannolitaly Logo">
+                </a>
                 <nav class="main-nav">
                     <ul>
                         <li><a href="index.html">Home</a></li>
@@ -26,16 +66,21 @@
                     </ul>
                 </nav>
             </div>
+            
             <div class="header-actions">
                 <div class="cart-container">
                     <a href="cart.html" class="cart-icon" aria-label="Shopping Cart">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
                         <span class="cart-count">0</span>
                     </a>
                 </div>
-                </div>
+            </div>
         </div>
-        </header>
+    </header>
 
     <main>
         <section class="cart-section">
@@ -43,6 +88,7 @@
                 <h1>Your Cart</h1>
 
                 <div class="cart-layout">
+                    
                     <div class="cart-items-column">
                         <div id="cart-items-container">
                             </div>
@@ -51,35 +97,64 @@
                     <aside class="cart-summary-column">
                         <div class="cart-summary">
                             <h2>Order Summary</h2>
+                            
                             <div class="summary-row">
                                 <span>Subtotal</span>
                                 <span id="cart-subtotal">$0.00</span>
                             </div>
+                            
+                            <div class="tip-section">
+                                <p style="margin-bottom: 10px; font-size: 0.9em; font-weight: 500; color: #555;">Add a Tip (Optional)</p>
+                                
+                                <div class="tip-options">
+                                    <button class="tip-btn" onclick="selectTip(0.18, this)">18%</button>
+                                    <button class="tip-btn" onclick="selectTip(0.20, this)">20%</button>
+                                    <button class="tip-btn" onclick="selectTip(0.25, this)">25%</button>
+                                    <button class="tip-btn active" onclick="selectTip(0, this)">No</button>
+                                </div>
+                                
+                                <div id="tip-amount-display" style="text-align: right; font-size: 0.9em; margin-top: 10px; color: #666; display: none;">
+                                    Tip added: <span id="tip-value" style="font-weight: bold; color: #333;">$0.00</span>
+                                </div>
+                            </div>
                             <div class="summary-row">
                                 <span>Shipping & Taxes</span>
-                                <span>Calculated at checkout</span>
+                                <span style="font-size: 0.9em; color: #666;">Calculated at checkout</span>
                             </div>
+                            
                             <hr>
-                            <div class="summary-total">
+
+                            <div class="summary-total" style="margin-top: 15px;">
                                 <span>Total</span>
                                 <span id="cart-total">$0.00</span>
                             </div>
-                            <a href="checkout.html" class="btn" style="width: 100%; margin-top: 1rem;">Proceed to Checkout</a>
-                            <p class="payment-note" style="margin-top: 1rem;">
-                                <strong>Please Note:</strong> Payment will be collected in cash upon delivery.
+                            
+                            <button id="checkout-btn" class="btn" style="width: 100%; margin-top: 1rem; cursor: pointer;">
+                                Proceed to Checkout
+                            </button>
+
+                            <p class="payment-note" style="margin-top: 1rem; font-size: 0.8rem; color: #777; text-align: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                Secure payment powered by <strong>Stripe</strong>.
                             </p>
                         </div>
                     </aside>
+                    
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="main-footer">
-        </footer>
+        <div class="container" style="text-align: center; padding: 20px; font-size: 0.9em; color: #777;">
+            <p>&copy; 2025 Cannolitaly. All rights reserved.</p>
+        </div>
+    </footer>
 
     <div id="toast-notification"></div>
 
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="cart.js"></script>
-    </body>
+    
+</body>
 </html>

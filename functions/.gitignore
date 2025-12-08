@@ -1,2 +1,21 @@
+# --- DEPENDENCIAS ---
+# Las librerías pesan mucho y se instalan solas en la nube.
 node_modules/
+
+# --- SEGURIDAD (MUY IMPORTANTE) ---
+# Bloqueamos el archivo .env para que tus claves NO se suban a GitHub.
+.env
+
+# --- LOGS Y ERRORES ---
+# Archivos de registro de errores que crea Firebase localmente.
+firebase-debug.log*
+firebase-debug.log
+
+# --- CONFIGURACIONES LOCALES ---
+# Configuraciones temporales del emulador.
 *.local
+
+# --- ARCHIVOS DE SISTEMA ---
+# Archivos basura que crean Mac y Windows automáticamente.
+.DS_Store
+Thumbs.db

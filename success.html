@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Cannolitaly</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #F9F4EF; /* Tu color crema de fondo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .success-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #eaeaea;
+        }
+
+        .check-icon-container {
+            width: 80px;
+            height: 80px;
+            background-color: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px auto;
+        }
+
+        .check-icon {
+            color: #2e7d32;
+            font-size: 40px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+        }
+
+        .order-info {
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            color: #555;
+            border: 1px dashed #ccc;
+        }
+
+        .btn-home {
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            padding: 15px 35px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-home:hover {
+            background-color: #555;
+        }
+
+        /* Animación simple para el check */
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .check-icon-container {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-card">
+        <div class="check-icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <h1>Grazie Mille!</h1>
+        
+        <p>
+            Your order has been successfully placed. <br>
+            We are preparing your fresh Sicilian cannoli with love.
+        </p>
+
+        <div class="order-info">
+            <p style="margin:0;">📧 A confirmation email has been sent to your inbox.</p>
+        </div>
+
+        <a href="index.html" class="btn-home">Back to Home</a>
+    </div>
+
+    <script>
+        // --- LIMPIEZA AUTOMÁTICA DEL CARRITO ---
+        // Al llegar a esta página, significa que el pago fue exitoso.
+        // Borramos el carrito para que el usuario pueda hacer una nueva compra limpia.
+        document.addEventListener('DOMContentLoaded', () => {
+            if(localStorage.getItem('cannolitalyCart')) {
+                localStorage.removeItem('cannolitalyCart');
+                console.log('Cart cleared successfully after payment.');
+            }
+        });
+    </script>
+
+</body>
+</html>
