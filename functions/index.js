@@ -1,18 +1,22 @@
 const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
-
-// --- 1. CONFIGURACIÓN E INICIALIZACIÓN ---
-require('dotenv').config(); 
-
 const cors = require('cors')({ origin: true });
+require('dotenv').config(); 
 
 admin.initializeApp();
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET);
+// --- 1. CONFIGURACIÓN DE SEGURIDAD HÍBRIDA ---
+// Esto permite que funcione en tu PC (usando .env) y en la Nube (usando Firebase Config) sin tocar código.
 
-// NOTA: Necesitas poner esto en tu .env después. 
-// Si pruebas en local con "stripe listen", te dará un secreto que empieza por whsec_...
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET; 
+// Intenta leer de la nube, si no existe, lee del .env
+const stripeSecret = functions.config().stripe?.secret || process.env.STRIPE_SECRET;
+const webhookSecret = functions.config().stripe?.webhook_secret || process.env.STRIPE_WEBHOOK_SECRET;
+
+if (!stripeSecret) {
+    console.error("ERROR CRÍTICO: Falta la clave secreta de Stripe.");
+}
+
+const stripe = require('stripe')(stripeSecret);
 
 // --- 2. CONSTANTES GLOBALES (Correos y Diseño) ---
 const ADMIN_EMAIL = 'cannolitali@gmail.com'; 
@@ -32,7 +36,7 @@ function buildItemsListHtml(items) {
           displayName = 'Cannoli';
       }
 
-      // Manejo seguro de sabores (si vienen de Stripe metadata pueden variar un poco)
+      // Manejo seguro de sabores
       let flavorsBreakdown = '';
       if(item.flavors) {
           flavorsBreakdown = Object.entries(item.flavors || {})
@@ -164,7 +168,7 @@ function buildAdminEmailBody(orderData, orderId, projectId, shortId) {
 
 // --- 4. CLOUD FUNCTIONS EXPORTADAS ---
 
-// TRIGGER A: Enviar correos cuando se crea una orden en Firestore
+// TRIGGER A: Enviar correos cuando se crea una orden en Firestore (Requiere Extensión Trigger Email)
 exports.onNewOrderCreate = functions
   .firestore
   .document('orders/{orderId}')
@@ -249,8 +253,7 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
         });
       }
 
-      // 2. Preparar METADATA (Esto es CRUCIAL para que el Webhook sepa qué compraron)
-      // Guardamos la info del carrito en un JSON string para recuperarla después del pago
+      // 2. Preparar METADATA
       const simplifiedItems = items.map(i => ({
           name: i.name,
           size: i.size,
@@ -258,7 +261,6 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
           flavors: i.flavors || {} 
       }));
 
-      // Detecta automáticamente si estás en localhost o en la web real
       const origin = req.headers.origin || 'https://cannolitaly.com';
 
       const session = await stripe.checkout.sessions.create({
@@ -268,11 +270,9 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
         success_url: `${origin}/success.html`, 
         cancel_url: `${origin}/checkout.html`,
         
-        // ⚠️ IMPORTANTE: Pedir datos de envío y teléfono a Stripe para guardarlos en DB
         phone_number_collection: { enabled: true },
         shipping_address_collection: { allowed_countries: ['US'] },
 
-        // ⚠️ IMPORTANTE: Pasamos los items "escondidos" en metadata para leerlos luego
         metadata: {
             cartItems: JSON.stringify(simplifiedItems),
             tipAmount: tipAmount.toString()
@@ -288,40 +288,32 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
   });
 });
 
-// TRIGGER C: WEBHOOK DE STRIPE (¡NUEVO!)
-// Esta función escucha cuando Stripe dice "¡Pago completado!" y guarda la orden en DB.
+// TRIGGER C: WEBHOOK DE STRIPE
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
     try {
-        // Verifica que el evento sea realmente de Stripe (Seguridad)
-        // Nota: Si aún no tienes STRIPE_WEBHOOK_SECRET en .env, esto fallará en producción.
-        // Para probar en local, usa el secreto que te da "stripe listen".
-        event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
+        // Usa el secreto configurado en el paso 1 (Config o .env)
+        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
     } catch (err) {
         console.error(`Webhook Signature Error: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // Solo nos interesa cuando el pago se ha completado
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-
         console.log('💰 Payment received! Saving order to Firestore...');
 
         try {
-            // Recuperamos los datos del cliente que Stripe recolectó
             const customerEmail = session.customer_details.email;
             const customerName = session.customer_details.name;
             const customerPhone = session.customer_details.phone || 'N/A';
             const address = session.shipping_details ? session.shipping_details.address : {};
             
-            // Recuperamos los items que escondimos en metadata
             const items = JSON.parse(session.metadata.cartItems || '[]');
-            const totalPaid = session.amount_total / 100; // Stripe viene en centavos
+            const totalPaid = session.amount_total / 100;
 
-            // Creamos el objeto de orden para guardar en Firebase
             const newOrder = {
                 customerName: customerName,
                 customerEmail: customerEmail,
@@ -333,10 +325,9 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
                 status: 'paid',
                 paymentId: session.id,
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                deliveryDateTime: admin.firestore.FieldValue.serverTimestamp() // OJO: Aquí podrías ajustar si necesitas fecha específica
+                deliveryDateTime: admin.firestore.FieldValue.serverTimestamp() 
             };
 
-            // GUARDAR EN FIRESTORE -> ESTO DISPARA EL EMAIL (Trigger A)
             await admin.firestore().collection('orders').add(newOrder);
             console.log('✅ Order saved successfully.');
 

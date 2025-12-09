@@ -293,13 +293,17 @@ async function initiateCheckout() {
     try {
         // 1. Preparar items
         const itemsToBuy = cart.map(item => ({
-            name: `${item.name} (${item.size})`,
+            name: `Sicilian Cannoli (${item.size})`, 
+            
             image: item.imageUrl, 
             price: item.pricePer,
             quantity: item.totalQuantity,
-            // Descripción corta para look limpio en Stripe
+            
+            // Descripción limpia para Stripe
             description: "Freshly filled Sicilian Cannoli",
-            // ⚠️ AQUÍ ESTÁ EL CAMBIO IMPORTANTE: Enviamos los sabores ⚠️
+            
+            // Enviamos los sabores SOLO al backend (ocultos en la UI de pago)
+            // para que lleguen al email.
             flavors: item.flavors 
         }));
 
