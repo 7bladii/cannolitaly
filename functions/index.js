@@ -1,30 +1,39 @@
 const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
+
+// Habilitar variables de entorno (.env) para seguridad híbrida
 require('dotenv').config(); 
 
 admin.initializeApp();
 
-// --- 1. CONFIGURACIÓN DE SEGURIDAD HÍBRIDA ---
-// Esto permite que funcione en tu PC (usando .env) y en la Nube (usando Firebase Config) sin tocar código.
-
-// Intenta leer de la nube, si no existe, lee del .env
+// --- 1. CONFIGURACIÓN DE SEGURIDAD (HÍBRIDA) ---
+// Busca las llaves en la configuración de Firebase (Nube) o en el archivo .env (Local)
 const stripeSecret = functions.config().stripe?.secret || process.env.STRIPE_SECRET;
 const webhookSecret = functions.config().stripe?.webhook_secret || process.env.STRIPE_WEBHOOK_SECRET;
+const sendgridKey = functions.config().sendgrid?.key || process.env.SENDGRID_API_KEY;
 
 if (!stripeSecret) {
-    console.error("ERROR CRÍTICO: Falta la clave secreta de Stripe.");
+    console.error("ADVERTENCIA: No se detectó la clave secreta de Stripe.");
 }
 
 const stripe = require('stripe')(stripeSecret);
 
-// --- 2. CONSTANTES GLOBALES (Correos y Diseño) ---
+const sgMail = require('@sendgrid/mail');
+if (sendgridKey) {
+    sgMail.setApiKey(sendgridKey);
+}
+
+// --- 2. CONSTANTES GLOBALES ---
 const ADMIN_EMAIL = 'cannolitali@gmail.com'; 
 const SENDER_EMAIL = 'orders@cannolitaly.com'; 
 const LOGO_URL = 'https://firebasestorage.googleapis.com/v0/b/cannoli-f1d4d.firebasestorage.app/o/logo.png?alt=media&token=d03e39ac-82a3-495b-9435-04357bd2bf02';
+
+// --- CAMBIO DE COLOR AQUÍ ---
+// Color de fondo igual al de tu website (Crema/Beige)
 const BG_COLOR = '#F9F4EF'; 
 
-// --- 3. HELPERS (Funciones de ayuda para HTML) ---
+// --- 3. HELPERS (DISEÑO DE CORREOS) ---
 
 function buildItemsListHtml(items) {
   let itemsHTML = '';
@@ -32,11 +41,11 @@ function buildItemsListHtml(items) {
   if (items && items.length > 0) {
     items.forEach(item => {
       let displayName = item.name;
+      // Limpieza del nombre por si acaso
       if (displayName && displayName.includes('Make your choice')) {
           displayName = 'Cannoli';
       }
 
-      // Manejo seguro de sabores
       let flavorsBreakdown = '';
       if(item.flavors) {
           flavorsBreakdown = Object.entries(item.flavors || {})
@@ -45,11 +54,11 @@ function buildItemsListHtml(items) {
       }
 
       itemsHTML += `
-        <div style="border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
-          <p style="margin: 0; font-size: 16px; color: #000;">
+        <div style="border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; margin-bottom: 15px;">
+          <p style="margin: 0; font-size: 16px; color: #333;">
             <strong>${item.quantity || item.totalQuantity}x ${displayName} (${item.size || 'Regular'})</strong>
           </p>
-          <ul style="list-style-type: none; padding-left: 15px; margin-top: 5px; font-size: 14px; color: #000;">
+          <ul style="list-style-type: none; padding-left: 15px; margin-top: 5px; font-size: 14px; color: #555;">
             ${flavorsBreakdown}
           </ul>
         </div>
@@ -61,6 +70,7 @@ function buildItemsListHtml(items) {
   return itemsHTML;
 }
 
+// EMAIL CLIENTE (Fondo Color Website)
 function buildClientEmailBody(orderData, orderId, shortId) {
   const itemsListHtml = buildItemsListHtml(orderData.items);
   
@@ -73,20 +83,20 @@ function buildClientEmailBody(orderData, orderId, shortId) {
     : '';
 
   return `
-    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: ${BG_COLOR}; padding: 40px 10px;">
-      <div style="max-width: 600px; margin: auto; padding: 40px 30px; border: 1px solid #e0e0e0; background-color: ${BG_COLOR}; border-radius: 8px; color: #333;">
+    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: ${BG_COLOR}; padding: 40px 10px; color: #333;">
+      <div style="max-width: 600px; margin: auto; padding: 40px 30px; border: 1px solid #dcdcdc; background-color: #ffffff; border-radius: 8px;">
         
         <h2 style="color: #6a1b9a; text-align: center; font-weight: 400; margin-bottom: 10px;">Grazie, ${orderData.customerName || 'Customer'}! 🇮🇹</h2>
         
         <div style="text-align: center; margin-bottom: 30px; margin-top: 20px;">
           <p style="font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px;">Order Reference</p>
-          <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+          <div style="display: inline-block; background-color: ${BG_COLOR}; padding: 10px 20px; border-radius: 6px; border: 1px solid #dcdcdc;">
               <span style="font-size: 22px; font-weight: 700; color: #333; letter-spacing: 3px;">#${shortId}</span>
           </div>
           <p style="font-size: 14px; color: #777; margin-top: 15px;">We have received your order.</p>
         </div>
         
-        <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; margin-top: 10px; border: 1px solid #eaeaea;">
+        <div style="background-color: #fafafa; padding: 30px; border-radius: 10px; margin-top: 10px; border: 1px solid #eaeaea;">
           <h3 style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-top: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; color: #555;">Your Selection</h3>
           ${itemsListHtml}
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
@@ -98,9 +108,6 @@ function buildClientEmailBody(orderData, orderId, shortId) {
         <div style="text-align: center; margin-top: 40px; font-size: 14px; color: #777;">
           <p style="margin-bottom: 5px;">Expected Delivery:</p>
           <strong style="color: #333; font-size: 18px;">${deliveryDateStr}</strong>
-          <p style="margin-top: 10px; font-size: 12px; color: #999;">
-            You will receive another update when your order is out for delivery.
-          </p>
         </div>
 
         ${logoHtml}
@@ -119,6 +126,7 @@ function buildClientEmailBody(orderData, orderId, shortId) {
   `;
 }
 
+// EMAIL ADMIN (Fondo Color Website)
 function buildAdminEmailBody(orderData, orderId, projectId, shortId) {
   const itemsListHtml = buildItemsListHtml(orderData.items);
 
@@ -135,40 +143,42 @@ function buildAdminEmailBody(orderData, orderId, projectId, shortId) {
     : orderData.customerAddress;
 
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 2px solid #6a1b9a; padding: 20px;">
-      <h2 style="color: #6a1b9a; text-align: center;">🚨 NEW ORDER #${shortId}</h2>
-      <p style="text-align: center; font-size: 11px; color: #999; margin-top:-10px;">Full ID: ${orderId}</p>
-      
-      <div style="background-color: #f3e5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-        <h3 style="margin-top: 0; color: #4a148c;">Customer Details (Shipping)</h3>
-        <p><strong>Name:</strong> ${orderData.customerName || 'N/A'}</p>
-        <p><strong>Phone:</strong> <a href="tel:${orderData.customerPhone}">${orderData.customerPhone || 'N/A'}</a></p>
-        <p><strong>Email:</strong> ${orderData.customerEmail || 'N/A'}</p>
-        <p><strong>Address:</strong><br> ${fullAddress || 'N/A'}</p>
-        <p><strong>Order Date:</strong> ${orderDate}</p>
-        <p><strong>Delivery Due:</strong> <span style="background-color: yellow; font-weight:bold; padding: 2px 5px;">${deliveryDateStr}</span></p>
+    <div style="font-family: Arial, sans-serif; background-color: ${BG_COLOR}; padding: 20px; color: #333;">
+      <div style="max-width: 600px; margin: auto; border: 2px solid #6a1b9a; padding: 20px; background-color: #ffffff; border-radius: 8px;">
+        <h2 style="color: #6a1b9a; text-align: center;">🚨 NEW ORDER #${shortId}</h2>
+        <p style="text-align: center; font-size: 11px; color: #999; margin-top:-10px;">Full ID: ${orderId}</p>
+        
+        <div style="background-color: #f3e5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+          <h3 style="margin-top: 0; color: #4a148c;">Customer Details</h3>
+          <p><strong>Name:</strong> ${orderData.customerName || 'N/A'}</p>
+          <p><strong>Phone:</strong> <a href="tel:${orderData.customerPhone}">${orderData.customerPhone || 'N/A'}</a></p>
+          <p><strong>Email:</strong> ${orderData.customerEmail || 'N/A'}</p>
+          <p><strong>Address:</strong><br> ${fullAddress || 'N/A'}</p>
+          <p><strong>Order Date:</strong> ${orderDate}</p>
+          <p><strong>Delivery Due:</strong> <span style="background-color: yellow; font-weight:bold; padding: 2px 5px; color: #000;">${deliveryDateStr}</span></p>
+        </div>
+
+        <h3 style="border-bottom: 1px solid #ccc;">Items to Prepare:</h3>
+        ${itemsListHtml}
+
+        <p style="font-size: 1.2em; font-weight: bold; text-align: right; margin-top: 20px; color: #6a1b9a;">
+          TOTAL VALUE: $${orderData.total ? orderData.total.toFixed(2) : '0.00'}
+        </p>
+        
+        <p style="text-align: center; margin-top: 20px;">
+          <a href="https://console.firebase.google.com/project/${projectId}/firestore/data/~2Forders~2F${orderId}" 
+             style="background-color: #6a1b9a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+             Open in Firebase Console
+          </a>
+        </p>
       </div>
-
-      <h3 style="border-bottom: 1px solid #ccc;">Items to Prepare:</h3>
-      ${itemsListHtml}
-
-      <p style="font-size: 1.2em; font-weight: bold; text-align: right; margin-top: 20px;">
-        TOTAL VALUE: $${orderData.total ? orderData.total.toFixed(2) : '0.00'}
-      </p>
-      
-      <p style="text-align: center; margin-top: 20px;">
-        <a href="https://console.firebase.google.com/project/${projectId}/firestore/data/~2Forders~2F${orderId}" 
-           style="background-color: #6a1b9a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-           Open in Firebase Console
-        </a>
-      </p>
     </div>
   `;
 }
 
 // --- 4. CLOUD FUNCTIONS EXPORTADAS ---
 
-// TRIGGER A: Enviar correos cuando se crea una orden en Firestore (Requiere Extensión Trigger Email)
+// TRIGGER A: Enviar correos
 exports.onNewOrderCreate = functions
   .firestore
   .document('orders/{orderId}')
@@ -216,7 +226,7 @@ exports.onNewOrderCreate = functions
     return null;
   });
 
-// TRIGGER B: Crear Sesión de Pago en Stripe (Incluye PROPINAS + DATOS WEBHOOK)
+// TRIGGER B: Crear Sesión de Pago en Stripe
 exports.createStripeSession = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     if (req.method !== "POST") {
@@ -226,12 +236,12 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
     try {
       const { items, tipAmount = 0 } = req.body;
 
-      // 1. Preparar items para la página de Stripe (Visual)
+      // Items para Stripe Visual
       const lineItems = items.map(item => ({
         price_data: {
           currency: 'usd',
           product_data: {
-            name: `${item.name} (${item.size})`,
+            name: `${item.name}`, 
             description: 'Freshly filled Sicilian Cannoli', 
           },
           unit_amount: Math.round(Number(item.price) * 100),
@@ -239,6 +249,7 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
         quantity: item.quantity,
       }));
 
+      // Propina
       if (tipAmount && Number(tipAmount) > 0) {
         lineItems.push({
           price_data: {
@@ -253,7 +264,7 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
         });
       }
 
-      // 2. Preparar METADATA
+      // Metadata para el Email
       const simplifiedItems = items.map(i => ({
           name: i.name,
           size: i.size,
@@ -269,10 +280,8 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
         mode: "payment",
         success_url: `${origin}/success.html`, 
         cancel_url: `${origin}/checkout.html`,
-        
         phone_number_collection: { enabled: true },
         shipping_address_collection: { allowed_countries: ['US'] },
-
         metadata: {
             cartItems: JSON.stringify(simplifiedItems),
             tipAmount: tipAmount.toString()
@@ -288,13 +297,12 @@ exports.createStripeSession = functions.https.onRequest((req, res) => {
   });
 });
 
-// TRIGGER C: WEBHOOK DE STRIPE
+// TRIGGER C: Webhook
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
     try {
-        // Usa el secreto configurado en el paso 1 (Config o .env)
         event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
     } catch (err) {
         console.error(`Webhook Signature Error: ${err.message}`);
